@@ -1,0 +1,26 @@
+{
+    "name": "Gem",
+    "description": "Integrate with Gem Security for bidirectional threat management",
+    "support": "partner",
+    "currentVersion": "1.0.0",
+    "author": "Gem Security",
+    "url": "https://gem.security/",
+    "email": "support@gem.security",
+    "categories": [
+        "Cloud Services"
+    ],
+    "tags": [],
+    "useCases": [],
+    "keywords": [],
+    "marketplaces": [
+        "xsoar",
+        "marketplacev2"
+    ],
+    "devEmail": [
+        "support@gem.security"
+    ],
+    "githubUser": [
+        "dorkauf",
+        "liormgem"
+    ]
+}
