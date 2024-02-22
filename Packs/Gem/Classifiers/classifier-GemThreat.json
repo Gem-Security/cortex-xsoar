@@ -1,0 +1,18 @@
+{
+    "id": "Gem Classifier",
+    "name": "Gem - Classification",
+    "type": "classification",
+    "defaultIncidentType": "Gem Threat",
+    "description": "Classifies Gem Threats.",
+    "fromVersion": "6.0.0",
+    "keyTypeMap": {},
+    "transformer": {
+        "complex": null,
+        "simple": ""
+    },
+    "version": -1,
+    "feed": false,
+    "propagationLabels": [
+        "all"
+    ]
+}

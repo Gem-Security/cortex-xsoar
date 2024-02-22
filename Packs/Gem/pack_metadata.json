@@ -12,6 +12,16 @@
     "tags": [],
     "useCases": [],
     "keywords": [],
+    "dependencies": {
+        "Base": {
+            "mandatory": true,
+            "name": "Base"
+        },
+        "GenericWebhook": {
+            "mandatory": true,
+            "name": "Generic Webhook"
+        }
+    },
     "marketplaces": [
         "xsoar",
         "marketplacev2"

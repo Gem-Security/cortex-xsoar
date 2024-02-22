@@ -1,0 +1,65 @@
+{
+    "id": "Gem-mapper",
+    "name": "Gem - Incoming Mapper",
+    "type": "mapping-incoming",
+    "description": "Maps incoming Gem Threat fields.",
+    "fromVersion": "6.8.0",
+    "defaultIncidentType": "",
+    "mapping": {
+        "Gem Threat": {
+            "dontMapEventToLabels": false,
+            "internalMapping": {
+                "Alert ID": {
+                    "complex": {
+                        "accessor": "alert_id",
+                        "filters": [],
+                        "root": "event",
+                        "transformers": []
+                    }
+                },
+                "Description": {
+                    "simple": "description"
+                },
+                "Incident Link": {
+                    "simple": "link"
+                },
+                "occurred": {
+                    "complex": {
+                        "filters": [],
+                        "root": "event_datetime",
+                        "transformers": [
+                            {
+                                "args": {
+                                    "add_utc_timezone": {
+                                        "isContext": false,
+                                        "value": {
+                                            "simple": "true"
+                                        }
+                                    },
+                                    "dayfirst": {
+                                        "isContext": false
+                                    },
+                                    "fuzzy": {
+                                        "isContext": false
+                                    },
+                                    "yearfirst": {
+                                        "isContext": false
+                                    }
+                                },
+                                "operator": "DateStringToISOFormat"
+                            }
+                        ]
+                    }
+                },
+                "severity": {
+                    "complex": {
+                        "filters": [],
+                        "root": "severity",
+                        "transformers": []
+                    }
+                }
+            }
+        }
+    },
+    "version": -1
+}
