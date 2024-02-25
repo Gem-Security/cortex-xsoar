@@ -1,25 +1,10 @@
 import demistomock as demisto  # noqa: F401
 from CommonServerPython import *  # noqa: F401
-"""Base Integration for Cortex XSOAR (aka Demisto)
-
-This is an empty Integration with some basic structure according
-to the code conventions.
-
-MAKE SURE YOU REVIEW/REPLACE ALL THE COMMENTS MARKED AS "TODO"
-
-Developer Documentation: https://xsoar.pan.dev/docs/welcome
-Code Conventions: https://xsoar.pan.dev/docs/integrations/code-conventions
-Linting: https://xsoar.pan.dev/docs/integrations/linting
-
-This is an empty structure file. Check an example at;
-https://github.com/demisto/content/blob/master/Packs/HelloWorld/Integrations/HelloWorld/HelloWorld.py
-
-"""
-
 from CommonServerUserPython import *  # noqa
 
 import urllib3
 from typing import Any
+import jwt
 
 # Disable insecure warnings
 urllib3.disable_warnings()
@@ -29,86 +14,169 @@ urllib3.disable_warnings()
 
 DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'  # ISO8601 format with UTC, default in XSOAR
 
+# ENDPOINTS
+TOKEN_URL = 'https://login.gem.security/oauth/token'
+THREATS_ENDPOINT = '/threats'
+THREAT_ENDPOINT = '/threats/{id}'
+INVENTORY_ENDPOINT = '/inventory'
+INVENTORY_ITEM_ENDPOINT = '/inventory/{id}'
+
+
 ''' CLIENT CLASS '''
 
 
-class Client(BaseClient):
-    """Client class to interact with the service API
+class GemClient(BaseClient):
+    def __init__(self, base_url: str, verify: bool, proxy: bool, client_id: str, client_secret: str):
+        super().__init__(base_url=base_url, verify=verify, proxy=proxy)
+        self._client_id = client_id
+        self._client_secret = client_secret
+        try:
+            self._auth_token = self._get_token()
+        except Exception as e:
+            raise DemistoException(f'Failed to get token. Error: {str(e)}')
 
-    This Client implements API calls, and does not contain any XSOAR logic.
-    Should only do requests and return data.
-    It inherits from BaseClient defined in CommonServer Python.
-    Most calls use _http_request() that handles proxy, SSL verification, etc.
-    For this  implementation, no special attributes defined
-    """
+    def _get_token(self):
+        ctx = get_integration_context()
 
-    # TODO: REMOVE the following dummy function:
-    def baseintegration_dummy(self, dummy: str) -> dict[str, str]:
-        """Returns a simple python dict with the information provided
-        in the input (dummy).
+        if not ctx or not ctx.get('auth_token'):
+            # No token in integration context, probably first run
+            auth_token = self._generate_token()
+        else:
+            # Token exists, check if it's expired and generate a new one if needed
+            auth_token = ctx.get('auth_token')
+            decoded_jwt = jwt.decode(auth_token, options={"verify_signature": False})
 
-        :type dummy: ``str``
-        :param dummy: string to add in the dummy dict that is returned
+            token_expiration = datetime.fromtimestamp(decoded_jwt['exp'])
 
-        :return: dict as {"dummy": dummy}
-        :rtype: ``str``
+            if token_expiration < datetime.now():
+                auth_token = self._generate_token()
+
+        return auth_token
+
+    def http_request(self, method: str, url_suffix='', full_url=None, headers=None, json_data=None, params=None, auth=True):
+        if auth:
+            headers = headers or {}
+            headers['Authorization'] = f'Bearer {self._auth_token}'
+        return super()._http_request(
+            method=method,
+            url_suffix=url_suffix,
+            full_url=full_url,
+            headers=headers,
+            json_data=json_data,
+            params=params
+        )
+
+    def _generate_token(self) -> str:
+        """Generate an access token using the client id and secret
+        :return: valid token
         """
 
-        return {"dummy": dummy}
-    # TODO: ADD HERE THE FUNCTIONS TO INTERACT WITH YOUR PRODUCT API
+        data = {
+            'client_id': self._client_id,
+            'client_secret': self._client_secret,
+            'grant_type': 'client_credentials',
+            "audience": "https://backend.gem.security"
+        }
+
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        token_res = self.http_request(
+            method='POST',
+            full_url=TOKEN_URL,
+            headers=headers,
+            json_data=data,
+            auth=False
+        )
+
+        set_integration_context((get_integration_context() or {}).update({'auth_token': token_res.get('access_token')}))
+
+        return token_res.get('access_token')
+
+    def get_inventory_item(self, item_id: str) -> dict:
+        """Get inventory item by id
+        :param item_id: id of the item to get
+        :return: inventory item
+        """
+        return self.http_request(
+            method='GET',
+            url_suffix=INVENTORY_ITEM_ENDPOINT.format(id=item_id)
+        )
+
+    def get_alert_list(self, limit=None, severity=None) -> list[dict]:
+        """For developing walkthrough purposes, this is a dummy response.
+           For real API calls, see the specific_api_endpoint_call_example method.
+
+        Args:
+            limit (int): The number of items to generate.
+            severity (str) : The severity value of the items returned.
+
+        Returns:
+            list[dict]: List of alerts data.
+        """
+
+        # TODO: Implement filtering
+
+        response = self.http_request(
+            method='GET',
+            url_suffix=THREATS_ENDPOINT
+        )
+
+        return response
 
 
 ''' HELPER FUNCTIONS '''
 
-# TODO: ADD HERE ANY HELPER FUNCTION YOU MIGHT NEED (if any)
+
+def init_client(params: dict) -> GemClient:
+    """
+    Initializes a new Client object
+    """
+    return GemClient(
+        base_url=params['api_endpoint'],
+        verify=True,
+        proxy=params.get('proxy', False),
+        client_id=params['client_id'],
+        client_secret=params['client_secret']
+    )
+
 
 ''' COMMAND FUNCTIONS '''
 
 
-def test_module(client: Client) -> str:
-    """Tests API connectivity and authentication'
-
-    Returning 'ok' indicates that the integration works like it is supposed to.
-    Connection to the service is successful.
-    Raises exceptions if something goes wrong.
-
-    :type client: ``Client``
-    :param Client: client to use
-
-    :return: 'ok' if test passed, anything else will fail the test.
-    :rtype: ``str``
+def test_module(params: dict[str, Any]) -> str:
     """
+    Tests API connectivity and authentication.
+    Return "ok" if test passed, anything else will fail the test.
 
-    message: str = ''
+    Args:
+        params (Dict): Integration parameters
+
+    Returns:
+        str: 'ok' if test passed, anything else will raise an exception and will fail the test.
+    """
     try:
-        # TODO: ADD HERE some code to test connectivity and authentication to your service.
-        # This  should validate all the inputs given in the integration configuration panel,
-        # either manually or by using an API that uses them.
-        message = 'ok'
-    except DemistoException as e:
-        if 'Forbidden' in str(e) or 'Authorization' in str(e):  # TODO: make sure you capture authentication errors
-            message = 'Authorization Error: make sure API Key is correctly set'
-        else:
-            raise e
-    return message
+        init_client(params)
+    except Exception:
+        raise DemistoException('Authentication failed')
+
+    return 'ok'
 
 
-# TODO: REMOVE the following dummy command function
-def baseintegration_dummy_command(client: Client, args: dict[str, Any]) -> CommandResults:
+def get_inventory_item(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    item_id = args.get('item_id')
+    if not item_id:
+        raise DemistoException('Item ID is a required parameter.')
 
-    dummy = args.get('dummy', None)
-    if not dummy:
-        raise ValueError('dummy not specified')
-
-    # Call the Client function and get the raw response
-    result = client.baseintegration_dummy(dummy)
+    result = client.get_inventory_item(item_id)
 
     return CommandResults(
-        outputs_prefix='BaseIntegration',
-        outputs_key_field='',
-        outputs=result,
+        readable_output=tableToMarkdown('Inventory Item', result),
+        outputs_prefix='Gem.InventoryItem',
+        outputs_key_field='id',
+        outputs=result
     )
-# TODO: ADD additional command functions that translate XSOAR inputs/outputs to Client
 
 
 ''' MAIN FUNCTION '''
@@ -121,47 +189,30 @@ def main() -> None:
     :rtype:
     """
 
-    # TODO: make sure you properly handle authentication
-    # api_key = demisto.params().get('credentials', {}).get('password')
+    params = demisto.params()
+    args = demisto.args()
+    command = demisto.command()
 
-    # get the service API url
-    base_url = urljoin(demisto.params()['url'], '/api/v1')
+    # TODO: Implement fetch_incidents, use fetch_back param to determine if to fetch 30 days back
+    # Whether to fetch incident 30 days back on initial fetch
+    params.get('fetch_back', False)
 
-    # if your Client class inherits from BaseClient, SSL verification is
-    # handled out of the box by it, just pass ``verify_certificate`` to
-    # the Client constructor
-    verify_certificate = not demisto.params().get('insecure', False)
-
-    # if your Client class inherits from BaseClient, system proxy is handled
-    # out of the box by it, just pass ``proxy`` to the Client constructor
-    proxy = demisto.params().get('proxy', False)
-
-    demisto.debug(f'Command being called is {demisto.command()}')
+    demisto.debug(f'Command being called is {command}')
     try:
+        if command == 'test-module':
+            # This is the call made when pressing the integration Test button
+            return_results(test_module(params))
 
-        # TODO: Make sure you add the proper headers for authentication
-        # (i.e. "Authorization": {api key})
-        headers: dict = {}
+        client = init_client(params)
 
-        client = Client(
-            base_url=base_url,
-            verify=verify_certificate,
-            headers=headers,
-            proxy=proxy)
-
-        if demisto.command() == 'test-module':
-            # This is the call made when pressing the integration Test button.
-            result = test_module(client)
-            return_results(result)
-
-        # TODO: REMOVE the following dummy command case:
-        elif demisto.command() == 'baseintegration-dummy':
-            return_results(baseintegration_dummy_command(client, demisto.args()))
-        # TODO: ADD command cases for the commands you will implement
+        if command == 'gem-get-inventory-item':
+            return_results(get_inventory_item(client, args))
+        else:
+            raise NotImplementedError(f'Command {command} is not implemented')
 
     # Log exceptions and return errors
     except Exception as e:
-        return_error(f'Failed to execute {demisto.command()} command.\nError:\n{str(e)}')
+        return_error(f'Failed to execute {command} command.\nError:\n{str(e)}')
 
 
 ''' ENTRY POINT '''

@@ -22,6 +22,10 @@ configuration:
     name: client_secret
     type: 4
     required: true
+  - display: Sync incidents 30 days back
+    name: fetch_back
+    type: 8
+    required: false
   - display: Use system proxy settings
     name: proxy
     type: 8
@@ -41,11 +45,17 @@ script:
         - contextPath: BaseIntegration.Output
           description: "[Enter a description of the data returned in this output.]"
           type: String
+    - name: gem-get-inventory-item
+      description: Get an inventory item by ID.
+      arguments:
+        - name: item_id
+          description: inventory item id.
+          required: true
   runonce: false
   script: "-"
   type: python
   subtype: python3
-  dockerimage: demisto/python3:3.10.12.63474
+  dockerimage: demisto/auth-utils:1.0.0.76157 # TODO: This docker image was selected since it contains the "jwt" package. Double check if it's the correct one.
 fromversion: 5.5.0
 tests:
   - No tests
