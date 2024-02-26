@@ -51,6 +51,16 @@ script:
         - name: item_id
           description: inventory item id.
           required: true
+    - name: gem-get-alert-list
+      description: Get a list of alerts.
+      arguments:
+        - name: limit
+          description: The maximum number of alerts to return.
+          required: true
+        - name: severity
+          description: The severity of the alerts to return.
+          required: false
+          type: Number
   runonce: false
   script: "-"
   type: python

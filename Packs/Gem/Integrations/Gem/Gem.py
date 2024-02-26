@@ -120,7 +120,8 @@ class GemClient(BaseClient):
 
         response = self.http_request(
             method='GET',
-            url_suffix=THREATS_ENDPOINT
+            url_suffix=THREATS_ENDPOINT,
+            params={'limit': limit, 'severity': severity}
         )
 
         return response
@@ -177,6 +178,25 @@ def get_inventory_item(client: GemClient, args: dict[str, Any]) -> CommandResult
         outputs_key_field='id',
         outputs=result
     )
+    
+def get_alert_list(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    limit = args.get('limit')
+    severity = args.get('severity')
+    
+    if not limit:
+        raise DemistoException('Limit is a required parameter.')
+    
+    if not limit.isdigit():
+        raise DemistoException('Limit must be a number.')
+    
+    result = client.get_alert_list(limit, severity)
+
+    return CommandResults(
+        readable_output=tableToMarkdown('Alerts', result),
+        outputs_prefix='Gem.Alert',
+        outputs_key_field='id',
+        outputs=result
+    )
 
 
 ''' MAIN FUNCTION '''
@@ -207,6 +227,8 @@ def main() -> None:
 
         if command == 'gem-get-inventory-item':
             return_results(get_inventory_item(client, args))
+        elif command == 'gem-get-alert-list':
+            return_results(get_alert_list(client, args))
         else:
             raise NotImplementedError(f'Command {command} is not implemented')
 
