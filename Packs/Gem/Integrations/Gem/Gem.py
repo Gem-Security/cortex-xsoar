@@ -104,7 +104,8 @@ class GemClient(BaseClient):
             url_suffix=INVENTORY_ITEM_ENDPOINT.format(id=resource_id)
         )
 
-    def list_threats(self, limit=None, severity=None) -> list[dict]:
+    def list_threats(self, maxincidents=None, firstfetch=None, severity=None, start_time=None, category=None, accounts=None, status=None,
+                     assignee=None, mitre_technique_id=None, threat_source=None, entity_type=None, ttp_id=None, provider=None) -> list[dict]:
         """For developing walkthrough purposes, this is a dummy response.
            For real API calls, see the specific_api_endpoint_call_example method.
 
@@ -116,15 +117,16 @@ class GemClient(BaseClient):
             list[dict]: List of alerts data.
         """
 
-        # TODO: Implement filtering
-
+        params = {'page_size': maxincidents, 'start_time': start_time, 'severity': severity, 'category': category, 'accounts': accounts, 'status': status, 'assignee': assignee,
+                  'mitre_technique_id': mitre_technique_id, 'threat_source': threat_source, 'entity_type': entity_type,
+                  'ttp_id': ttp_id, 'provider': provider}
         response = self.http_request(
             method='GET',
             url_suffix=THREATS_ENDPOINT,
-            params={'limit': limit, 'severity': severity}
+            params={k: v for k, v in params.items() if v is not None}
         )
 
-        return response
+        return response['results']
 
 
 ''' HELPER FUNCTIONS '''
@@ -144,6 +146,26 @@ def init_client(params: dict) -> GemClient:
 
 
 ''' COMMAND FUNCTIONS '''
+
+
+def fetch_threats(client: GemClient, max_results=None, severity=None) -> None:
+    last_run = demisto.getLastRun()
+
+    day_ago = datetime.now() - timedelta(days=1)
+    day_ago.time()
+    if last_run and 'start_time' in last_run:
+        last_run.get('start_time')
+
+    incidents: list[dict[str, Any]] = []
+
+    alerts = client.list_threats(maxincidents=max_results,
+                                 start_time=dateparser.parse(last_fetch),  # type: ignore
+                                 severity=severity)
+    demisto.debug(f'Received {len(alerts)} alerts from server.')
+
+    demisto.incidents(incidents)
+    demisto.setLastRun(
+        {'start_time': datetime.now().strftime(DATE_FORMAT)})
 
 
 def test_module(params: dict[str, Any]) -> str:
@@ -183,6 +205,8 @@ def get_resource_details(client: GemClient, args: dict[str, Any]) -> CommandResu
 def list_threats(client: GemClient, args: dict[str, Any]) -> CommandResults:
     limit = args.get('limit')
     severity = args.get('severity')
+    provider = args.get('provider')
+    start_time = args.get('start_time')
 
     if not limit:
         raise DemistoException('Limit is a required parameter.')
@@ -190,8 +214,9 @@ def list_threats(client: GemClient, args: dict[str, Any]) -> CommandResults:
     if not limit.isdigit():
         raise DemistoException('Limit must be a number.')
 
-    result = client.list_threats(limit, severity)
+    result = client.list_threats(maxincidents=limit, severity=severity, provider=provider, start_time=start_time)
 
+    demisto.debug(f"Got {len(result)} Alerts")
     return CommandResults(
         readable_output=tableToMarkdown('Alerts', result),
         outputs_prefix='Gem.Alert',
@@ -230,6 +255,8 @@ def main() -> None:
             return_results(get_resource_details(client, args))
         elif command == 'gem-list-threats':
             return_results(list_threats(client, args))
+        elif command == 'fetch-incidents':
+            fetch_threats(client)
         else:
             raise NotImplementedError(f'Command {command} is not implemented')
 
