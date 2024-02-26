@@ -104,7 +104,11 @@ class GemClient(BaseClient):
             url_suffix=INVENTORY_ITEM_ENDPOINT.format(id=resource_id)
         )
 
-    def get_threat_details(self, threat_id):
+    def get_threat_details(self, threat_id: str):
+        """ Get threat details
+        :param threat_id: id of the threat to get
+        :return: threat details
+        """
         response = self.http_request(
             method='GET',
             url_suffix=THREAT_ENDPOINT.format(id=threat_id)
@@ -131,6 +135,20 @@ class GemClient(BaseClient):
         response = self.http_request(
             method='GET',
             url_suffix=THREATS_ENDPOINT,
+            params={k: v for k, v in params.items() if v is not None}
+
+        )
+
+        return response['results']
+
+    def list_inventory_resources(self, cursor=None, page_size=None, include_deleted=None, region=None, resource_type=None,
+                                 search=None, total=None) -> list[dict]:
+        params = {'cursor': cursor, 'page_size': page_size, 'include_deleted': include_deleted, 'region': region,
+                  'resource_type': resource_type, 'search': search, 'total': total}
+
+        response = self.http_request(
+            method='GET',
+            url_suffix=INVENTORY_ENDPOINT,
             params={k: v for k, v in params.items() if v is not None}
 
         )
@@ -199,7 +217,31 @@ def get_resource_details(client: GemClient, args: dict[str, Any]) -> CommandResu
 
 def get_threat_details(client: GemClient, args: dict[str, Any]) -> CommandResults:
     threat_id = args.get('threat_id')
+
+    if not threat_id:
+        raise DemistoException('Threat ID is a required parameter.')
     result = client.get_threat_details(threat_id=threat_id)
+
+    return CommandResults(
+        readable_output=tableToMarkdown('Alert', result),
+        outputs_prefix='Gem.Alert',
+        outputs_key_field='id',
+        outputs=result
+    )
+
+
+def list_inventory_resources(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    cursor = args.get('cursor')
+    page_size = args.get('page_size')
+    include_deleted = args.get('include_deleted')
+    region = args.get('region')
+    resource_type = args.get('resource_type')
+    search = args.get('search')
+    total = args.get('total')
+
+    result = client.list_inventory_resources(cursor=cursor, page_size=page_size, include_deleted=include_deleted,
+                                             region=region, resource_type=resource_type, search=search, total=total)
+
     return CommandResults(
         readable_output=tableToMarkdown('Alert', result),
         outputs_prefix='Gem.Alert',
@@ -266,6 +308,8 @@ def main() -> None:
             return_results(list_threats(client, args))
         elif command == 'gem-get-threat-details':
             return_results(get_threat_details(client, args))
+        elif command == 'gem-list-inventory-resources':
+            return_results(list_inventory_resources(client, args))
         elif command == 'fetch-incidents':
             fetch_threats(client)
         else:
