@@ -104,8 +104,8 @@ class GemClient(BaseClient):
             url_suffix=INVENTORY_ITEM_ENDPOINT.format(id=resource_id)
         )
 
-    def list_threats(self, maxincidents=None, firstfetch=None, severity=None, start_time=None, category=None, accounts=None, status=None,
-                     assignee=None, mitre_technique_id=None, threat_source=None, entity_type=None, ttp_id=None, provider=None) -> list[dict]:
+    def list_threats(self, time_start=None, time_end=None, page=None, page_size=None, ordering=None, status=None, ttp_id=None,
+                     title=None, severity=None, entity_type=None, cloud_provider=None) -> list[dict]:
         """For developing walkthrough purposes, this is a dummy response.
            For real API calls, see the specific_api_endpoint_call_example method.
 
@@ -117,13 +117,14 @@ class GemClient(BaseClient):
             list[dict]: List of alerts data.
         """
 
-        params = {'page_size': maxincidents, 'start_time': start_time, 'severity': severity, 'category': category, 'accounts': accounts, 'status': status, 'assignee': assignee,
-                  'mitre_technique_id': mitre_technique_id, 'threat_source': threat_source, 'entity_type': entity_type,
-                  'ttp_id': ttp_id, 'provider': provider}
+        params = {'start_time': time_start, 'end_time': time_end, 'page': page, 'page_size': page_size, 'ordering': ordering,
+                  'status': status, 'ttp_id': ttp_id, 'title': title, 'severity': severity, 'entity_type': entity_type,
+                  'provider': cloud_provider}
         response = self.http_request(
             method='GET',
             url_suffix=THREATS_ENDPOINT,
             params={k: v for k, v in params.items() if v is not None}
+
         )
 
         return response['results']
@@ -148,24 +149,10 @@ def init_client(params: dict) -> GemClient:
 ''' COMMAND FUNCTIONS '''
 
 
-def fetch_threats(client: GemClient, max_results=None, severity=None) -> None:
-    last_run = demisto.getLastRun()
-
-    day_ago = datetime.now() - timedelta(days=1)
-    day_ago.time()
-    if last_run and 'start_time' in last_run:
-        last_run.get('start_time')
-
-    incidents: list[dict[str, Any]] = []
-
-    alerts = client.list_threats(maxincidents=max_results,
-                                 start_time=dateparser.parse(last_fetch),  # type: ignore
-                                 severity=severity)
-    demisto.debug(f'Received {len(alerts)} alerts from server.')
-
-    demisto.incidents(incidents)
-    demisto.setLastRun(
-        {'start_time': datetime.now().strftime(DATE_FORMAT)})
+def fetch_threats(client: GemClient, maxincidents=None, firstfetch=None, severity=None, start_time=None, category=None,
+                  accounts=None, status=None, assignee=None, mitre_technique_id=None, threat_source=None, entity_type=None,
+                  ttp_id=None, provider=None) -> None:
+    pass
 
 
 def test_module(params: dict[str, Any]) -> str:
@@ -203,18 +190,21 @@ def get_resource_details(client: GemClient, args: dict[str, Any]) -> CommandResu
 
 
 def list_threats(client: GemClient, args: dict[str, Any]) -> CommandResults:
-    limit = args.get('limit')
+    time_start = args.get('time_start')
+    time_end = args.get('time_end')
+    page = args.get('page')
+    page_size = args.get('page_size')
+    ordering = args.get('ordering')
+    status = args.get('status')
+    ttp_id = args.get('ttp_id')
+    title = args.get('title')
     severity = args.get('severity')
-    provider = args.get('provider')
-    start_time = args.get('start_time')
+    entity_type = args.get('entity_type')
+    cloud_provider = args.get('cloud_provider')
 
-    if not limit:
-        raise DemistoException('Limit is a required parameter.')
-
-    if not limit.isdigit():
-        raise DemistoException('Limit must be a number.')
-
-    result = client.list_threats(maxincidents=limit, severity=severity, provider=provider, start_time=start_time)
+    result = client.list_threats(time_start=time_start, time_end=time_end, page=page, page_size=page_size,
+                                 ordering=ordering, status=status, ttp_id=ttp_id, title=title, severity=severity,
+                                 entity_type=entity_type, cloud_provider=cloud_provider)
 
     demisto.debug(f"Got {len(result)} Alerts")
     return CommandResults(
