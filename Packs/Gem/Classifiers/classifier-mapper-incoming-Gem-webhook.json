@@ -1,65 +1,73 @@
 {
-    "id": "Gem-mapper-webhook",
-    "name": "Gem - Incoming Mapper Webhook",
-    "type": "mapping-incoming",
-    "description": "Maps incoming Gem Threat fields when received via webhook.",
-    "fromVersion": "6.8.0",
+    "brands": null,
+    "cacheVersn": 0,
     "defaultIncidentType": "",
+    "definitionId": "",
+    "feed": false,
+    "fromVersion": "6.8.0",
+    "incidentSamples": null,
+    "indicatorSamples": null,
+    "instanceIds": null,
+    "itemVersion": "",
+    "keyTypeMap": {},
+    "locked": false,
+    "logicalVersion": 3,
     "mapping": {
         "Gem Threat": {
-            "dontMapEventToLabels": false,
+            "dontMapEventToLabels": true,
             "internalMapping": {
+                "Account Id": {
+                    "simple": "account.name"
+                },
+                "Account Name": {
+                    "simple": "account.display_name"
+                },
+                "Account Provider": {
+                    "simple": "account.cloud_provider"
+                },
                 "Alert ID": {
-                    "complex": {
-                        "accessor": "alert_id",
-                        "filters": [],
-                        "root": "event",
-                        "transformers": []
-                    }
+                    "simple": "event.alert_id"
+                },
+                "Alert Source": {
+                    "simple": "event.alert_source"
+                },
+                "Alert Time": {
+                    "simple": "event.created_at"
                 },
                 "Description": {
                     "simple": "description"
                 },
-                "Incident Link": {
+                "Event Time": {
+                    "simple": "event_datetime"
+                },
+                "Gem Url": {
                     "simple": "link"
                 },
-                "occurred": {
-                    "complex": {
-                        "filters": [],
-                        "root": "event_datetime",
-                        "transformers": [
-                            {
-                                "args": {
-                                    "add_utc_timezone": {
-                                        "isContext": false,
-                                        "value": {
-                                            "simple": "true"
-                                        }
-                                    },
-                                    "dayfirst": {
-                                        "isContext": false
-                                    },
-                                    "fuzzy": {
-                                        "isContext": false
-                                    },
-                                    "yearfirst": {
-                                        "isContext": false
-                                    }
-                                },
-                                "operator": "DateStringToISOFormat"
-                            }
-                        ]
-                    }
+                "Threat Id": {
+                    "simple": "event.threat_id"
+                },
+                "Title": {
+                    "simple": "title"
+                },
+                "name": {
+                    "simple": "title"
                 },
                 "severity": {
-                    "complex": {
-                        "filters": [],
-                        "root": "severity",
-                        "transformers": []
-                    }
+                    "simple": "severity"
                 }
             }
         }
     },
+    "id": "Gem-mapper-webhook",
+    "name": "Gem - Incoming Mapper Webhook",
+    "type": "mapping-incoming",
+    "description": "Maps incoming Gem Threat fields when received via webhook.",
+    "packID": "",
+    "packName": "",
+    "sourceClassifierId": "",
+    "system": false,
+    "toServerVersion": "",
+    "transformer": {},
+    "unclassifiedCases": null,
     "version": -1
 }
