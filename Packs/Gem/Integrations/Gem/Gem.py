@@ -94,14 +94,14 @@ class GemClient(BaseClient):
 
         return token_res.get('access_token')
 
-    def get_inventory_item(self, item_id: str) -> dict:
-        """Get inventory item by id
-        :param item_id: id of the item to get
+    def get_resource_details(self, resource_id: str) -> dict:
+        """ Get inventory item details
+        :param resource_id: id of the item to get
         :return: inventory item
         """
         return self.http_request(
             method='GET',
-            url_suffix=INVENTORY_ITEM_ENDPOINT.format(id=item_id)
+            url_suffix=INVENTORY_ITEM_ENDPOINT.format(id=resource_id)
         )
 
     def get_alert_list(self, limit=None, severity=None) -> list[dict]:
@@ -165,12 +165,12 @@ def test_module(params: dict[str, Any]) -> str:
     return 'ok'
 
 
-def get_inventory_item(client: GemClient, args: dict[str, Any]) -> CommandResults:
-    item_id = args.get('item_id')
-    if not item_id:
-        raise DemistoException('Item ID is a required parameter.')
+def get_resource_details(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    resource_id = args.get('resource_id')
+    if not resource_id:
+        raise DemistoException('Resource ID is a required parameter.')
 
-    result = client.get_inventory_item(item_id)
+    result = client.get_resource_details(resource_id)
 
     return CommandResults(
         readable_output=tableToMarkdown('Inventory Item', result),
@@ -178,17 +178,18 @@ def get_inventory_item(client: GemClient, args: dict[str, Any]) -> CommandResult
         outputs_key_field='id',
         outputs=result
     )
-    
+
+
 def get_alert_list(client: GemClient, args: dict[str, Any]) -> CommandResults:
     limit = args.get('limit')
     severity = args.get('severity')
-    
+
     if not limit:
         raise DemistoException('Limit is a required parameter.')
-    
+
     if not limit.isdigit():
         raise DemistoException('Limit must be a number.')
-    
+
     result = client.get_alert_list(limit, severity)
 
     return CommandResults(
@@ -225,8 +226,8 @@ def main() -> None:
 
         client = init_client(params)
 
-        if command == 'gem-get-inventory-item':
-            return_results(get_inventory_item(client, args))
+        if command == 'gem-get-resource-details':
+            return_results(get_resource_details(client, args))
         elif command == 'gem-get-alert-list':
             return_results(get_alert_list(client, args))
         else:

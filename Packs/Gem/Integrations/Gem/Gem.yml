@@ -35,22 +35,143 @@ display: Gem
 name: Gem
 script:
   commands:
-    - arguments:
-        - description: "[Enter a description of the argument, including any important information users need to know, for example, default values.]"
-          name: dummy
-          required: true
-      description: "[Enter a description of the command, including any important information users need to know, for example required permissions.]"
-      name: baseintegration-dummy
-      outputs:
-        - contextPath: BaseIntegration.Output
-          description: "[Enter a description of the data returned in this output.]"
-          type: String
-    - name: gem-get-inventory-item
-      description: Get an inventory item by ID.
+    - name: gem-list-threats
+      description: List all threats detected in Gem
       arguments:
-        - name: item_id
-          description: inventory item id.
+        - name: page
+          description: The page number to return.
           required: true
+          defaultValue: "1"
+        - name: page_size
+          description: The number of items to return per page.
+          required: true
+          defaultValue: "10"
+        - name: ordering
+          description: The ordering of the items.
+          required: false
+          defaultValue: "-timeframe_start"
+          auto: PREDEFINED
+          predefined:
+            - "-timeframe_start"
+            - "timeframe_state"
+            - "-mitre_technique"
+            - "mitre_technique"
+            - "-severity"
+            - "severity"
+            - "-assignee"
+            - "assignee"
+            - "-is_resolved"
+            - "is_resolved"
+        - name: status
+          description: The status of the threats to return.
+          required: false
+          isArray: true
+          auto: PREDEFINED
+          predefined:
+            - open
+            - resolved
+            - in_progress
+        - name: ttp_id
+          description: The TTP ID of the threats to return.
+          required: false
+        - name: title
+          description: The title of the threats to return.
+          required: false
+        - name: severity
+          description: The severity of the threats to return.
+          required: false
+          isArray: true
+          auto: PREDEFINED
+          predefined:
+            - low
+            - medium
+            - high
+        - name: cloud_provider
+          description: The provider of the threats to return.
+          required: false
+          isArray: true
+          auto: PREDEFINED
+          predefined:
+            - aws
+            - azure
+            - gcp
+            - okta
+            - huawei
+        - name: entity_type
+          description: The entity type of the threats to return.
+          required: false
+        - name: time_start
+          description: "The start time of the threats to return in ISO format. Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+        - name: time_end
+          description: "The end time of the threats to return in ISO format. Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+
+    - name: gem-get-threat-details
+      description: Get details about a specific threat
+      arguments:
+        - name: threat_id
+          description: The ID of the threat to get details for.
+          required: true
+
+    - name: gem-list-inventory-resources
+      description: List inventory resources in Gem
+      arguments:
+        - name: cursor
+          description: The cursor to use for pagination.
+          required: false
+        - name: page_size
+          description: The number of items to return per page.
+          required: true
+          defaultValue: "10"
+        - name: include_deleted
+          description: Include deleted resources in the response.
+          required: false
+          defaultValue: false
+          type: Boolean
+        - name: region
+          description: The region of the resources to return.
+          required: false
+        - name: resource_type
+          description: The type of the resources to return.
+          required: false
+        - name: search
+          description: The search query to use.
+          required: false
+        - name: total
+          description: Whether to include the total count of resources in the response.
+          required: false
+          defaultValue: false
+          type: Boolean
+
+    - name: gem-get-resource-details
+      description: Get details about a specific resource
+      arguments:
+        - name: resource_id
+          description: The ID of the resource to get details for.
+          required: true
+
+    - name: gem-list-ips-by-entity
+      description: List all source IP addresses used by an entity in a specific timeframe. The results are sorted by activity volume.
+      arguments:
+        - name: entity_id
+          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+          required: true
+        - name: entity_type
+          description: "Type of the entity. See documentation for the full options list."
+          required: true
+        - name: read_only
+          description: "Show read-only events."
+          required: false
+          type: Boolean
+          defaultValue: false
+        - name: start_time
+          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+        - name: end_time
+          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+
     - name: gem-get-alert-list
       description: Get a list of alerts.
       arguments:
