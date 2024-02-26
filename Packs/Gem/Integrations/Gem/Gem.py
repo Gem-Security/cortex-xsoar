@@ -104,6 +104,14 @@ class GemClient(BaseClient):
             url_suffix=INVENTORY_ITEM_ENDPOINT.format(id=resource_id)
         )
 
+    def get_threat_details(self, threat_id):
+        response = self.http_request(
+            method='GET',
+            url_suffix=THREAT_ENDPOINT.format(id=threat_id)
+        )
+
+        return response
+
     def list_threats(self, time_start=None, time_end=None, page=None, page_size=None, ordering=None, status=None, ttp_id=None,
                      title=None, severity=None, entity_type=None, cloud_provider=None) -> list[dict]:
         """For developing walkthrough purposes, this is a dummy response.
@@ -189,6 +197,17 @@ def get_resource_details(client: GemClient, args: dict[str, Any]) -> CommandResu
     )
 
 
+def get_threat_details(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    threat_id = args.get('threat_id')
+    result = client.get_threat_details(threat_id=threat_id)
+    return CommandResults(
+        readable_output=tableToMarkdown('Alert', result),
+        outputs_prefix='Gem.Alert',
+        outputs_key_field='id',
+        outputs=result
+    )
+
+
 def list_threats(client: GemClient, args: dict[str, Any]) -> CommandResults:
     time_start = args.get('time_start')
     time_end = args.get('time_end')
@@ -245,6 +264,8 @@ def main() -> None:
             return_results(get_resource_details(client, args))
         elif command == 'gem-list-threats':
             return_results(list_threats(client, args))
+        elif command == 'gem-get-threat-details':
+            return_results(get_threat_details(client, args))
         elif command == 'fetch-incidents':
             fetch_threats(client)
         else:
