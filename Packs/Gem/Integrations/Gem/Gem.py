@@ -20,6 +20,9 @@ THREATS_ENDPOINT = '/threats'
 THREAT_ENDPOINT = '/threats/{id}'
 INVENTORY_ENDPOINT = '/inventory'
 INVENTORY_ITEM_ENDPOINT = '/inventory/{id}'
+BREAKDOWN_ENDPOINT = '/'
+
+UPDATE_THREAT_ENDPOINT = '../detection/threats/{id}/update_threat_status_v2'
 
 
 ''' CLIENT CLASS '''
@@ -155,6 +158,30 @@ class GemClient(BaseClient):
 
         return response['results']
 
+    def list_ips_by_entity(self, entity_id=None, entity_type=None, read_only=None, start_time=None,
+                           end_time=None) -> list[dict]:
+
+        params = {'entity_id': entity_id, 'entity_type': entity_type, 'read_only': read_only,
+                  'start_time': start_time, 'end_time': end_time}
+        response = self.http_request(
+            method='GET',
+            url_suffix=BREAKDOWN_ENDPOINT,
+            params={k: v for k, v in params.items() if v is not None}
+
+        )
+
+        return response['results']
+
+    def update_threat_status(self, threat_id: str, status: Optional[str], verdict: Optional[str], reason: Optional[str] = None):
+        json_data = {"resolved_metadata": {'verdict': verdict, 'reason': reason}, 'status': status}
+        response = self.http_request(
+            method='PATCH',
+            url_suffix=UPDATE_THREAT_ENDPOINT.format(id=threat_id),
+            json_data=json_data
+        )
+
+        return response
+
 
 ''' HELPER FUNCTIONS '''
 
@@ -276,6 +303,47 @@ def list_threats(client: GemClient, args: dict[str, Any]) -> CommandResults:
     )
 
 
+def list_ips_by_entity(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    entity_id = args.get('entity_id')
+    entity_type = args.get('entity_type')
+    read_only = args.get('read_only')
+    start_time = args.get('start_time')
+    end_time = args.get('end_time')
+
+    if not entity_id:
+        raise DemistoException('Entity ID is a required parameter.')
+
+    if not entity_type:
+        raise DemistoException('Entity Type is a required parameter.')
+
+    if not start_time:
+        raise DemistoException('Start time is a required parameter.')
+
+    if not end_time:
+        raise DemistoException('End time is a required parameter.')
+
+    result = client.list_ips_by_entity(entity_id=entity_id, entity_type=entity_type, read_only=read_only,
+                                       start_time=start_time, end_time=end_time)
+
+    return CommandResults(
+        readable_output=tableToMarkdown('Alerts', result),
+        outputs_prefix='Gem.Alert',
+        outputs_key_field='id',
+        outputs=result
+    )
+
+
+def update_threat_status(client: GemClient, args: dict[str, Any]):
+    threat_id = args.get('threat_id')
+    status = args.get('status')
+    verdict = args.get('verdict')
+    reason = args.get('reason')
+
+    if not threat_id:
+        raise DemistoException('Threat ID is a required parameter.')
+    client.update_threat_status(threat_id=threat_id, status=status, verdict=verdict, reason=reason)
+
+
 ''' MAIN FUNCTION '''
 
 
@@ -302,14 +370,18 @@ def main() -> None:
 
         client = init_client(params)
 
-        if command == 'gem-get-resource-details':
-            return_results(get_resource_details(client, args))
-        elif command == 'gem-list-threats':
+        if command == 'gem-list-threats':
             return_results(list_threats(client, args))
         elif command == 'gem-get-threat-details':
             return_results(get_threat_details(client, args))
         elif command == 'gem-list-inventory-resources':
             return_results(list_inventory_resources(client, args))
+        elif command == 'gem-get-resource-details':
+            return_results(get_resource_details(client, args))
+        elif command == 'gem-list-ips-by-entity':
+            return_results(list_ips_by_entity(client, args))
+        elif command == 'gem-update-threat-status':
+            return_results(update_threat_status(client, args))
         elif command == 'fetch-incidents':
             fetch_threats(client)
         else:
