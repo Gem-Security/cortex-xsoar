@@ -172,16 +172,159 @@ script:
           description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
           required: true
 
-    - name: gem-get-alert-list
-      description: Get a list of alerts.
+    - name: gem-list-services-by-entity
+      description: List all services accessed by an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
-        - name: limit
-          description: The maximum number of alerts to return.
+        - name: entity_id
+          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
           required: true
-        - name: severity
-          description: The severity of the alerts to return.
+        - name: entity_type
+          description: "Type of the entity. See documentation for the full options list."
+          required: true
+        - name: read_only
+          description: "Show read-only events."
           required: false
-          type: Number
+          type: Boolean
+          defaultValue: false
+        - name: start_time
+          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+        - name: end_time
+          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+
+    - name: gem-list-events-by-entity
+      description: List all events performed by an entity in a specific timeframe. The results are sorted by activity volume.
+      arguments:
+        - name: entity_id
+          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+          required: true
+        - name: entity_type
+          description: "Type of the entity. See documentation for the full options list."
+          required: true
+        - name: read_only
+          description: "Show read-only events."
+          required: false
+          type: Boolean
+          defaultValue: false
+        - name: start_time
+          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+        - name: end_time
+          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+
+    - name: gem-list-accessing-entities
+      description: List all entities that accessed an entity in a specific timeframe. The results are sorted by activity volume.
+      arguments:
+        - name: resource_id
+          description: "Gem ID of the resource. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+          required: true
+        - name: resource_type
+          description: "Type of the resource. See documentation for the full options list."
+          required: true
+        - name: read_only
+          description: "Show read-only events."
+          required: false
+          type: Boolean
+          defaultValue: false
+        - name: start_time
+          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+        - name: end_time
+          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+
+    - name: gem-list-using-entities
+      description: List all entities that used an entity in a specific timeframe. The results are sorted by activity volume.
+      arguments:
+        - name: resource_id
+          description: "Gem ID of the resource. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+          required: true
+        - name: resource_type
+          description: "Type of the resource. See documentation for the full options list."
+          required: true
+        - name: read_only
+          description: "Show read-only events."
+          required: false
+          type: Boolean
+          defaultValue: false
+        - name: start_time
+          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+        - name: end_time
+          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+
+    - name: gem-list-events-on-entity
+      description: List all events performed on an entity in a specific timeframe. The results are sorted by activity volume.
+      arguments:
+        - name: entity_id
+          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+          required: true
+        - name: entity_type
+          description: "Type of the entity. See documentation for the full options list."
+          required: true
+        - name: read_only
+          description: "Show read-only events."
+          required: false
+          type: Boolean
+          defaultValue: false
+        - name: start_time
+          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+        - name: end_time
+          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+    - name: gem-list-accessing-ips
+      description: List all source IP addresses that accessed an entity in a specific timeframe. The results are sorted by activity volume.
+      arguments:
+        - name: resource_id
+          description: "Gem ID of the resource. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+          required: true
+        - name: resource_type
+          description: "Type of the resource. See documentation for the full options list."
+          required: true
+        - name: read_only
+          description: "Show read-only events."
+          required: false
+          type: Boolean
+          defaultValue: false
+        - name: start_time
+          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+        - name: end_time
+          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          required: true
+
+    - name: gem-update-threat-status
+      description: Set a threat's status to open, in progress or resolved.
+      arguments:
+        - name: threat_id
+          description: The ID of the threat to update.
+          required: true
+        - name: status
+          description: The new status of the threat (open, in_progress, resolved).
+          required: true
+          auto: PREDEFINED
+          predefined:
+            - open
+            - in_progress
+            - resolved
+        - name: verdict
+          description: The verdict of the threat.
+          required: true
+          auto: PREDEFINED
+          predefined:
+            - malicious
+            - security_test
+            - planned_action
+            - not_malicious
+            - inconclusive
+        - name: reason
+          description: The reason for resolving the threat.
+          required: false
+
   runonce: false
   script: "-"
   type: python

@@ -104,7 +104,7 @@ class GemClient(BaseClient):
             url_suffix=INVENTORY_ITEM_ENDPOINT.format(id=resource_id)
         )
 
-    def get_alert_list(self, limit=None, severity=None) -> list[dict]:
+    def list_threats(self, limit=None, severity=None) -> list[dict]:
         """For developing walkthrough purposes, this is a dummy response.
            For real API calls, see the specific_api_endpoint_call_example method.
 
@@ -180,7 +180,7 @@ def get_resource_details(client: GemClient, args: dict[str, Any]) -> CommandResu
     )
 
 
-def get_alert_list(client: GemClient, args: dict[str, Any]) -> CommandResults:
+def list_threats(client: GemClient, args: dict[str, Any]) -> CommandResults:
     limit = args.get('limit')
     severity = args.get('severity')
 
@@ -190,7 +190,7 @@ def get_alert_list(client: GemClient, args: dict[str, Any]) -> CommandResults:
     if not limit.isdigit():
         raise DemistoException('Limit must be a number.')
 
-    result = client.get_alert_list(limit, severity)
+    result = client.list_threats(limit, severity)
 
     return CommandResults(
         readable_output=tableToMarkdown('Alerts', result),
@@ -228,8 +228,8 @@ def main() -> None:
 
         if command == 'gem-get-resource-details':
             return_results(get_resource_details(client, args))
-        elif command == 'gem-get-alert-list':
-            return_results(get_alert_list(client, args))
+        elif command == 'gem-list-threats':
+            return_results(list_threats(client, args))
         else:
             raise NotImplementedError(f'Command {command} is not implemented')
 
