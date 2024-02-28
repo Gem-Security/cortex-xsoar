@@ -21,7 +21,7 @@ THREATS_ENDPOINT = '/threats'
 THREAT_ENDPOINT = '/threats/{id}'
 INVENTORY_ENDPOINT = '/inventory'
 INVENTORY_ITEM_ENDPOINT = '/inventory/{id}'
-BREAKDOWN_ENDPOINT = '/'
+BREAKDOWN_ENDPOINT = '../triage/investigation/timeline/breakdown'
 
 UPDATE_THREAT_ENDPOINT = '../detection/threats/{id}/update_threat_status_v2'
 
@@ -214,19 +214,26 @@ class GemClient(BaseClient):
 
         return results
 
-    def list_ips_by_entity(self, entity_id=None, entity_type=None, read_only=None, start_time=None,
-                           end_time=None) -> list[dict]:
-
-        params = {'entity_id': entity_id, 'entity_type': entity_type, 'read_only': read_only,
+    def _breakdown(self, breakdown_by, entity_id=None, entity_type=None, read_only=None, start_time=None, end_time=None) -> dict:
+        params = {'breakdown_by': breakdown_by, 'entity_id': entity_id, 'entity_type': entity_type, 'read_only': read_only,
                   'start_time': start_time, 'end_time': end_time}
         response = self.http_request(
             method='GET',
             url_suffix=BREAKDOWN_ENDPOINT,
             params={k: v for k, v in params.items() if v is not None}
-
         )
 
-        return response['results']
+        return response['table']
+
+    def list_ips_by_entity(self, entity_id=None, entity_type=None, read_only=None, start_time=None,
+                           end_time=None) -> dict:
+        return self._breakdown(breakdown_by='source_ip', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
+                               start_time=start_time, end_time=end_time)
+
+    def list_services_by_entity(self, entity_id=None, entity_type=None, read_only=None, start_time=None,
+                                end_time=None) -> dict:
+        return self._breakdown(breakdown_by='service', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
+                               start_time=start_time, end_time=end_time)
 
     def update_threat_status(self, threat_id: str, status: Optional[str], verdict: Optional[str], reason: Optional[str] = None):
         json_data = {"resolved_metadata": {'verdict': verdict, 'reason': reason}, 'status': status}
@@ -362,7 +369,7 @@ def list_threats(client: GemClient, args: dict[str, Any]) -> CommandResults:
     )
 
 
-def list_ips_by_entity(client: GemClient, args: dict[str, Any]) -> CommandResults:
+def _breakdown_validate_params(client: GemClient, args: dict[str, Any]) -> tuple[Any, Any, Any | None, Any, Any]:
     entity_id = args.get('entity_id')
     entity_type = args.get('entity_type')
     read_only = args.get('read_only')
@@ -381,14 +388,47 @@ def list_ips_by_entity(client: GemClient, args: dict[str, Any]) -> CommandResult
     if not end_time:
         raise DemistoException('End time is a required parameter.')
 
+    return entity_id, entity_type, read_only, start_time, end_time
+
+
+def _parse_breakdown_result(result: dict) -> tuple[list[str], list[list[str]], list[dict]]:
+    new_t = []
+
+    for r in result['rows']:
+        new_t.append(r['row'])
+
+    return result['headers'], new_t, result['rows']
+
+
+def list_ips_by_entity(client: GemClient, args: dict[str, Any]) -> CommandResults:
+
+    entity_id, entity_type, read_only, start_time, end_time = _breakdown_validate_params(client, args)
+
     result = client.list_ips_by_entity(entity_id=entity_id, entity_type=entity_type, read_only=read_only,
                                        start_time=start_time, end_time=end_time)
+    headers, rows, outputs = _parse_breakdown_result(result)
 
     return CommandResults(
-        readable_output=tableToMarkdown('Alerts', result),
+        readable_output=tableToMarkdown('IPs', rows, headers=headers),
         outputs_prefix='Gem.Alert',
-        outputs_key_field='id',
-        outputs=result
+        outputs_key_field='SOURCEIPADDRESS',
+        outputs=outputs
+    )
+
+
+def list_services_by_entity(client: GemClient, args: dict[str, Any]) -> CommandResults:
+
+    entity_id, entity_type, read_only, start_time, end_time = _breakdown_validate_params(client, args)
+
+    result = client.list_services_by_entity(entity_id=entity_id, entity_type=entity_type, read_only=read_only,
+                                            start_time=start_time, end_time=end_time)
+    headers, rows, outputs = _parse_breakdown_result(result)
+
+    return CommandResults(
+        readable_output=tableToMarkdown('Services', rows, headers=headers),
+        outputs_prefix='Gem.Alert',
+        outputs_key_field='SERVICE',
+        outputs=outputs
     )
 
 
@@ -439,6 +479,8 @@ def main() -> None:
             return_results(get_resource_details(client, args))
         elif command == 'gem-list-ips-by-entity':
             return_results(list_ips_by_entity(client, args))
+        elif command == 'gem-list-services-by-entity':
+            return_results(list_services_by_entity(client, args))
         elif command == 'gem-update-threat-status':
             return_results(update_threat_status(client, args))
         elif command == 'fetch-incidents':
