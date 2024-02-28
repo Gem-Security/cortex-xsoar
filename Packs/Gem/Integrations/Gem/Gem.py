@@ -13,6 +13,7 @@ urllib3.disable_warnings()
 ''' CONSTANTS '''
 
 DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'  # ISO8601 format with UTC, default in XSOAR
+PAGE_SIZE = 5
 
 # ENDPOINTS
 TOKEN_URL = 'https://login.gem.security/oauth/token'
@@ -119,44 +120,99 @@ class GemClient(BaseClient):
 
         return response
 
-    def list_threats(self, time_start=None, time_end=None, page=None, page_size=None, ordering=None, status=None, ttp_id=None,
+    def list_threats(self, limit, time_start=None, time_end=None, ordering=None, status=None, ttp_id=None,
                      title=None, severity=None, entity_type=None, cloud_provider=None) -> list[dict]:
-        """For developing walkthrough purposes, this is a dummy response.
-           For real API calls, see the specific_api_endpoint_call_example method.
+        """ List threats
+        :param time_start: time of first threat
+        :param time_end: time of last threat
+        :param limit: amount of threats
+        :param ordering: how to order threats
+        :param status: filter of threat status
+        :param ttp_id: filter of threat ttp
+        :param title: filter of threat title
+        :param severity: filter of threat severity
+        :param entity_type: filter of threat entity type
+        :param cloud_provider: filter of threat cloud provider
 
-        Args:
-            limit (int): The number of items to generate.
-            severity (str) : The severity value of the items returned.
-
-        Returns:
-            list[dict]: List of alerts data.
+        :return: threat list
         """
 
-        params = {'start_time': time_start, 'end_time': time_end, 'page': page, 'page_size': page_size, 'ordering': ordering,
-                  'status': status, 'ttp_id': ttp_id, 'title': title, 'severity': severity, 'entity_type': entity_type,
-                  'provider': cloud_provider}
-        response = self.http_request(
-            method='GET',
-            url_suffix=THREATS_ENDPOINT,
-            params={k: v for k, v in params.items() if v is not None}
+        results = []
+        results_fetched = 0
+        for p in range(1, int(limit / PAGE_SIZE) + 2):
+            if limit == results_fetched:
+                break
+            if limit - results_fetched < PAGE_SIZE:
+                demisto.debug(f"Fetching page #{p} page_size {limit - results_fetched}")
+                params = {'start_time': time_start, 'end_time': time_end, 'page': p, 'page_size': limit - results_fetched,
+                          'ordering': ordering,
+                          'status': status, 'ttp_id': ttp_id, 'title': title, 'severity': severity, 'entity_type': entity_type,
+                          'provider': cloud_provider}
+                response = self.http_request(
+                    method='GET',
+                    url_suffix=THREATS_ENDPOINT,
+                    params={k: v for k, v in params.items() if v is not None}
 
-        )
+                )
+                results_fetched = limit
 
-        return response['results']
+            else:
+                demisto.debug(f"Fetching page #{p} page_size {PAGE_SIZE}")
+                params = {'start_time': time_start, 'end_time': time_end, 'page': p, 'page_size': PAGE_SIZE, 'ordering': ordering,
+                          'status': status, 'ttp_id': ttp_id, 'title': title, 'severity': severity, 'entity_type': entity_type,
+                          'provider': cloud_provider}
+                response = self.http_request(
+                    method='GET',
+                    url_suffix=THREATS_ENDPOINT,
+                    params={k: v for k, v in params.items() if v is not None}
 
-    def list_inventory_resources(self, cursor=None, page_size=None, include_deleted=None, region=None, resource_type=None,
-                                 search=None, total=None) -> list[dict]:
-        params = {'cursor': cursor, 'page_size': page_size, 'include_deleted': include_deleted, 'region': region,
-                  'resource_type': resource_type, 'search': search, 'total': total}
+                )
+                if len(response['results']) < PAGE_SIZE:
+                    demisto.debug(f"Fetched {len(response['results'])}")
+                    results_fetched += len(response['results'])
+                    results.extend(response['results'])
+                    break
 
+                results_fetched += PAGE_SIZE
+
+            results.extend(response['results'])
+
+        demisto.debug(f"Fetched {len(results)} threats")
+
+        return results
+
+    def list_inventory_resources(self, limit, include_deleted=None, region=None, resource_type=None,
+                                 search=None) -> list[dict]:
+        results = []
+        results_fetched = 0
+        params = {'page_size': limit if limit < PAGE_SIZE else PAGE_SIZE, 'include_deleted': include_deleted, 'region': region,
+                  'resource_type': resource_type, 'search': search}
         response = self.http_request(
             method='GET',
             url_suffix=INVENTORY_ENDPOINT,
             params={k: v for k, v in params.items() if v is not None}
 
         )
+        results_fetched += len(response['results'])
+        results.extend(response['results'])
 
-        return response['results']
+        while response['next'] != "" and results_fetched < limit:
+            page_size = limit - results_fetched if limit - results_fetched < PAGE_SIZE else PAGE_SIZE
+            demisto.debug(f"Fetching page #{response['next']} page_size {page_size}")
+            params = {'cursor': response['next'], 'page_size': page_size, 'include_deleted': include_deleted, 'region': region,
+                      'resource_type': resource_type, 'search': search}
+            response = self.http_request(
+                method='GET',
+                url_suffix=INVENTORY_ENDPOINT,
+                params={k: v for k, v in params.items() if v is not None}
+
+            )
+            results_fetched += len(response['results'])
+            results.extend(response['results'])
+
+        demisto.debug(f"Fetched {len(results)} inventory resources")
+
+        return results
 
     def list_ips_by_entity(self, entity_id=None, entity_type=None, read_only=None, start_time=None,
                            end_time=None) -> list[dict]:
@@ -258,16 +314,14 @@ def get_threat_details(client: GemClient, args: dict[str, Any]) -> CommandResult
 
 
 def list_inventory_resources(client: GemClient, args: dict[str, Any]) -> CommandResults:
-    cursor = args.get('cursor')
-    page_size = args.get('page_size')
+    limit = arg_to_number(args.get("limit")) or PAGE_SIZE
     include_deleted = args.get('include_deleted')
     region = args.get('region')
     resource_type = args.get('resource_type')
     search = args.get('search')
-    total = args.get('total')
 
-    result = client.list_inventory_resources(cursor=cursor, page_size=page_size, include_deleted=include_deleted,
-                                             region=region, resource_type=resource_type, search=search, total=total)
+    result = client.list_inventory_resources(limit, include_deleted=include_deleted,
+                                             region=region, resource_type=resource_type, search=search)
 
     return CommandResults(
         readable_output=tableToMarkdown('Alert', result),
@@ -280,8 +334,7 @@ def list_inventory_resources(client: GemClient, args: dict[str, Any]) -> Command
 def list_threats(client: GemClient, args: dict[str, Any]) -> CommandResults:
     time_start = args.get('time_start')
     time_end = args.get('time_end')
-    page = args.get('page')
-    page_size = args.get('page_size')
+    limit = arg_to_number(args.get("limit")) or PAGE_SIZE
     ordering = args.get('ordering')
     status = args.get('status')
     ttp_id = args.get('ttp_id')
@@ -290,7 +343,13 @@ def list_threats(client: GemClient, args: dict[str, Any]) -> CommandResults:
     entity_type = args.get('entity_type')
     cloud_provider = args.get('cloud_provider')
 
-    result = client.list_threats(time_start=time_start, time_end=time_end, page=page, page_size=page_size,
+    if not time_start:
+        raise DemistoException('Start time is a required parameter.')
+
+    if not time_end:
+        raise DemistoException('End time is a required parameter.')
+
+    result = client.list_threats(time_start=time_start, time_end=time_end, limit=limit,
                                  ordering=ordering, status=status, ttp_id=ttp_id, title=title, severity=severity,
                                  entity_type=entity_type, cloud_provider=cloud_provider)
 

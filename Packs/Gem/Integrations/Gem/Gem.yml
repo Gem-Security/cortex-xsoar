@@ -38,14 +38,16 @@ script:
     - name: gem-list-threats
       description: List all threats detected in Gem
       arguments:
-        - name: page
-          description: The page number to return.
+        - name: limit
+          description: The number of alert to fetch.
+          required: false
+          defaultValue: "50"
+        - name: time_start
+          description: "The start time of the threats to return in ISO format. Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
           required: true
-          defaultValue: "1"
-        - name: page_size
-          description: The number of items to return per page.
+        - name: time_end
+          description: "The end time of the threats to return in ISO format. Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
           required: true
-          defaultValue: "10"
         - name: ordering
           description: The ordering of the items.
           required: false
@@ -100,12 +102,7 @@ script:
         - name: entity_type
           description: The entity type of the threats to return.
           required: false
-        - name: time_start
-          description: "The start time of the threats to return in ISO format. Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
-          required: true
-        - name: time_end
-          description: "The end time of the threats to return in ISO format. Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
-          required: true
+
 
     - name: gem-get-threat-details
       description: Get details about a specific threat
@@ -117,13 +114,10 @@ script:
     - name: gem-list-inventory-resources
       description: List inventory resources in Gem
       arguments:
-        - name: cursor
-          description: The cursor to use for pagination.
+        - name: limit
+          description: The number of items to return.
           required: false
-        - name: page_size
-          description: The number of items to return per page.
-          required: true
-          defaultValue: "10"
+          defaultValue: "50"
         - name: include_deleted
           description: Include deleted resources in the response.
           required: false
@@ -138,11 +132,6 @@ script:
         - name: search
           description: The search query to use.
           required: false
-        - name: total
-          description: Whether to include the total count of resources in the response.
-          required: false
-          defaultValue: false
-          type: Boolean
 
     - name: gem-get-resource-details
       description: Get details about a specific resource
