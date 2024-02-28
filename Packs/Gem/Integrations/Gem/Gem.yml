@@ -103,7 +103,6 @@ script:
           description: The entity type of the threats to return.
           required: false
 
-
     - name: gem-get-threat-details
       description: Get details about a specific threat
       arguments:
@@ -132,6 +131,61 @@ script:
         - name: search
           description: The search query to use.
           required: false
+      outputs:
+        - contextPath: Gem.InventoryItems.account.account_status
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItems.account.cloud_provider
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItems.account.display_name
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItems.account.hierarchy_path
+          description: ""
+          type: Unknown
+        - contextPath: Gem.InventoryItems.account.id
+          description: ""
+          type: Number
+        - contextPath: Gem.InventoryItems.account.identifier
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItems.account.organization_name
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItems.account.tenant
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItems.categories
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItems.created_at
+          description: ""
+          type: Date
+        - contextPath: Gem.InventoryItems.deleted
+          description: ""
+          type: Boolean
+        - contextPath: Gem.InventoryItems.external_url
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItems.identifiers.name
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItems.identifiers.value
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItems.region
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItems.resource_id
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItems.resource_type
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItems.tags
+          description: ""
+          type: Unknown
 
     - name: gem-get-resource-details
       description: Get details about a specific resource
@@ -139,6 +193,58 @@ script:
         - name: resource_id
           description: The ID of the resource to get details for.
           required: true
+      outputs:
+        - contextPath: Gem.InventoryItem.account.account_status
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItem.account.cloud_provider
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItem.account.display_name
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItem.account.hierarchy_path
+          description: ""
+          type: Unknown
+        - contextPath: Gem.InventoryItem.account.id
+          description: ""
+          type: Number
+        - contextPath: Gem.InventoryItem.account.identifier
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItem.account.organization_name
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItem.account.tenant
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItem.categories
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItem.created_at
+          description: ""
+          type: Date
+        - contextPath: Gem.InventoryItem.deleted
+          description: ""
+          type: Boolean
+        - contextPath: Gem.InventoryItem.external_url
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItem.identifiers.name
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItem.identifiers.value
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItem.region
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItem.resource_id
+          description: ""
+          type: String
+        - contextPath: Gem.InventoryItem.resource_type
+          description: ""
+          type: String
 
     - name: gem-list-ips-by-entity
       description: List all source IP addresses used by an entity in a specific timeframe. The results are sorted by activity volume.
@@ -206,11 +312,11 @@ script:
     - name: gem-list-accessing-entities
       description: List all entities that accessed an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
-        - name: resource_id
-          description: "Gem ID of the resource. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+        - name: entity_id
+          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
           required: true
-        - name: resource_type
-          description: "Type of the resource. See documentation for the full options list."
+        - name: entity_type
+          description: "Type of the entity. See documentation for the full options list."
           required: true
         - name: read_only
           description: "Show read-only events."
@@ -227,11 +333,11 @@ script:
     - name: gem-list-using-entities
       description: List all entities that used an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
-        - name: resource_id
-          description: "Gem ID of the resource. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+        - name: entity_id
+          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
           required: true
-        - name: resource_type
-          description: "Type of the resource. See documentation for the full options list."
+        - name: entity_type
+          description: "Type of the entity. See documentation for the full options list."
           required: true
         - name: read_only
           description: "Show read-only events."
@@ -268,11 +374,11 @@ script:
     - name: gem-list-accessing-ips
       description: List all source IP addresses that accessed an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
-        - name: resource_id
-          description: "Gem ID of the resource. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+        - name: entity_id
+          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
           required: true
-        - name: resource_type
-          description: "Type of the resource. See documentation for the full options list."
+        - name: entity_type
+          description: "Type of the entity. See documentation for the full options list."
           required: true
         - name: read_only
           description: "Show read-only events."

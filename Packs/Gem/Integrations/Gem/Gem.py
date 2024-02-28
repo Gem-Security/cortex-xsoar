@@ -14,6 +14,7 @@ urllib3.disable_warnings()
 
 DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'  # ISO8601 format with UTC, default in XSOAR
 PAGE_SIZE = 5
+OK_CODES = (200, 201, 202)
 
 # ENDPOINTS
 TOKEN_URL = 'https://login.gem.security/oauth/token'
@@ -22,6 +23,7 @@ THREAT_ENDPOINT = '/threats/{id}'
 INVENTORY_ENDPOINT = '/inventory'
 INVENTORY_ITEM_ENDPOINT = '/inventory/{id}'
 BREAKDOWN_ENDPOINT = '../triage/investigation/timeline/breakdown'
+EVENTS_ENDPOINT = '../triage/investigation/entity/events'
 
 UPDATE_THREAT_ENDPOINT = '../detection/threats/{id}/update_threat_status_v2'
 
@@ -31,7 +33,7 @@ UPDATE_THREAT_ENDPOINT = '../detection/threats/{id}/update_threat_status_v2'
 
 class GemClient(BaseClient):
     def __init__(self, base_url: str, verify: bool, proxy: bool, client_id: str, client_secret: str):
-        super().__init__(base_url=base_url, verify=verify, proxy=proxy)
+        super().__init__(base_url=base_url, verify=verify, proxy=proxy, ok_codes=OK_CODES)
         self._client_id = client_id
         self._client_secret = client_secret
         try:
@@ -61,14 +63,19 @@ class GemClient(BaseClient):
         if auth:
             headers = headers or {}
             headers['Authorization'] = f'Bearer {self._auth_token}'
-        return super()._http_request(
-            method=method,
-            url_suffix=url_suffix,
-            full_url=full_url,
-            headers=headers,
-            json_data=json_data,
-            params=params
-        )
+        try:
+            return super()._http_request(
+                method=method,
+                url_suffix=url_suffix,
+                full_url=full_url,
+                headers=headers,
+                json_data=json_data,
+                params=params,
+                raise_on_status=True
+            )
+        except DemistoException as e:
+            demisto.error(f"Failed to execute {method} request to {url_suffix}. Error: {str(e)}")
+            raise Exception(f"Failed to execute {method} request to {url_suffix}. Error: {str(e)}")
 
     def _generate_token(self) -> str:
         """Generate an access token using the client id and secret
@@ -235,6 +242,29 @@ class GemClient(BaseClient):
         return self._breakdown(breakdown_by='service', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
                                start_time=start_time, end_time=end_time)
 
+    def list_events_by_entity(self, entity_id=None, entity_type=None, read_only=None, start_time=None,
+                              end_time=None) -> dict:
+        return self._breakdown(breakdown_by='entity_event_out', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
+                               start_time=start_time, end_time=end_time)
+
+    def list_accessing_entities(self, entity_id=None, entity_type=None, read_only=None, start_time=None,
+                                end_time=None) -> dict:
+        return self._breakdown(breakdown_by='user_in', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
+                               start_time=start_time, end_time=end_time)
+
+    def list_using_entities(self, entity_id=None, entity_type=None, read_only=None, start_time=None,
+                            end_time=None) -> dict:
+        return self._breakdown(breakdown_by='using_entities', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
+                               start_time=start_time, end_time=end_time)
+
+    def list_events_on_entity(self, entity_id=None, entity_type=None, start_time=None, end_time=None, read_only=None) -> dict:
+        return self._breakdown(breakdown_by='entity_event_in', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
+                               start_time=start_time, end_time=end_time)
+
+    def list_accessing_ips(self, entity_id=None, entity_type=None, start_time=None, end_time=None, read_only=None) -> dict:
+        return self._breakdown(breakdown_by='ip_access', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
+                               start_time=start_time, end_time=end_time)
+
     def update_threat_status(self, threat_id: str, status: Optional[str], verdict: Optional[str], reason: Optional[str] = None):
         json_data = {"resolved_metadata": {'verdict': verdict, 'reason': reason}, 'status': status}
         response = self.http_request(
@@ -300,7 +330,7 @@ def get_resource_details(client: GemClient, args: dict[str, Any]) -> CommandResu
     return CommandResults(
         readable_output=tableToMarkdown('Inventory Item', result),
         outputs_prefix='Gem.InventoryItem',
-        outputs_key_field='id',
+        outputs_key_field='resource_id',
         outputs=result
     )
 
@@ -331,8 +361,8 @@ def list_inventory_resources(client: GemClient, args: dict[str, Any]) -> Command
                                              region=region, resource_type=resource_type, search=search)
 
     return CommandResults(
-        readable_output=tableToMarkdown('Alert', result),
-        outputs_prefix='Gem.Alert',
+        readable_output=tableToMarkdown('Inventory Items', result),
+        outputs_prefix='Gem.InventoryItems',
         outputs_key_field='id',
         outputs=result
     )
@@ -432,6 +462,86 @@ def list_services_by_entity(client: GemClient, args: dict[str, Any]) -> CommandR
     )
 
 
+def list_events_by_entity(client: GemClient, args: dict[str, Any]) -> CommandResults:
+
+    entity_id, entity_type, read_only, start_time, end_time = _breakdown_validate_params(client, args)
+
+    result = client.list_events_by_entity(entity_id=entity_id, entity_type=entity_type, read_only=read_only,
+                                          start_time=start_time, end_time=end_time)
+    headers, rows, outputs = _parse_breakdown_result(result)
+
+    return CommandResults(
+        readable_output=tableToMarkdown('Events by Entity', rows, headers=headers),
+        outputs_prefix='Gem.Alert',
+        outputs_key_field='EVENTNAME',
+        outputs=outputs
+    )
+
+
+def list_accessing_entities(client: GemClient, args: dict[str, Any]) -> CommandResults:
+
+    entity_id, entity_type, read_only, start_time, end_time = _breakdown_validate_params(client, args)
+
+    result = client.list_accessing_entities(entity_id=entity_id, entity_type=entity_type, read_only=read_only,
+                                            start_time=start_time, end_time=end_time)
+    headers, rows, outputs = _parse_breakdown_result(result)
+
+    return CommandResults(
+        readable_output=tableToMarkdown('Accessing Entities', rows, headers=headers),
+        outputs_prefix='Gem.Alert',
+        outputs_key_field='',
+        outputs=outputs
+    )
+
+
+def list_using_entities(client: GemClient, args: dict[str, Any]) -> CommandResults:
+
+    entity_id, entity_type, read_only, start_time, end_time = _breakdown_validate_params(client, args)
+
+    result = client.list_using_entities(entity_id=entity_id, entity_type=entity_type, read_only=read_only,
+                                        start_time=start_time, end_time=end_time)
+    headers, rows, outputs = _parse_breakdown_result(result)
+
+    return CommandResults(
+        readable_output=tableToMarkdown('Using Entities', rows, headers=headers),
+        outputs_prefix='Gem.Alert',
+        outputs_key_field='ENTITY_ID',
+        outputs=outputs
+    )
+
+
+def list_events_on_entity(client: GemClient, args: dict[str, Any]) -> CommandResults:
+
+    entity_id, entity_type, read_only, start_time, end_time = _breakdown_validate_params(client, args)
+
+    result = client.list_events_on_entity(entity_id=entity_id, entity_type=entity_type,
+                                          start_time=start_time, end_time=end_time, read_only=read_only)
+    headers, rows, outputs = _parse_breakdown_result(result)
+
+    return CommandResults(
+        readable_output=tableToMarkdown('Events on Entity', rows, headers=headers),
+        outputs_prefix='Gem.Alert',
+        outputs_key_field='EVENTNAME',
+        outputs=outputs
+    )
+
+
+def list_accessing_ips(client: GemClient, args: dict[str, Any]) -> CommandResults:
+
+    entity_id, entity_type, read_only, start_time, end_time = _breakdown_validate_params(client, args)
+
+    result = client.list_accessing_ips(entity_id=entity_id, entity_type=entity_type,
+                                       start_time=start_time, end_time=end_time, read_only=read_only)
+    headers, rows, outputs = _parse_breakdown_result(result)
+
+    return CommandResults(
+        readable_output=tableToMarkdown('IPs Accessing Entity', rows, headers=headers),
+        outputs_prefix='Gem.Alert',
+        outputs_key_field='EVENTNAME',
+        outputs=outputs
+    )
+
+
 def update_threat_status(client: GemClient, args: dict[str, Any]):
     threat_id = args.get('threat_id')
     status = args.get('status')
@@ -481,6 +591,16 @@ def main() -> None:
             return_results(list_ips_by_entity(client, args))
         elif command == 'gem-list-services-by-entity':
             return_results(list_services_by_entity(client, args))
+        elif command == 'gem-list-events-by-entity':
+            return_results(list_events_by_entity(client, args))
+        elif command == 'gem-list-accessing-entities':
+            return_results(list_accessing_entities(client, args))
+        elif command == 'gem-list-using-entities':
+            return_results(list_using_entities(client, args))
+        elif command == 'gem-list-events-on-entity':
+            return_results(list_events_on_entity(client, args))
+        elif command == 'gem-list-accessing-ips':
+            return_results(list_accessing_ips(client, args))
         elif command == 'gem-update-threat-status':
             return_results(update_threat_status(client, args))
         elif command == 'fetch-incidents':
