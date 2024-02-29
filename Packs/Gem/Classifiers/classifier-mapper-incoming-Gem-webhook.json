@@ -40,14 +40,32 @@
                 "Event Time": {
                     "simple": "event_datetime"
                 },
+                "Events Count": {
+                    "simple": "event.events_total_count"
+                },
                 "Gem Url": {
                     "simple": "link"
+                },
+                "Main Entity Id": {
+                    "simple": "event.main_entity.id"
+                },
+                "Main Entity Name": {
+                    "simple": "event.main_entity.name"
+                },
+                "Main Entity Region": {
+                    "simple": "event.main_entity.metadata.region"
+                },
+                "Main Entity Type": {
+                    "simple": "event.main_entity.type"
                 },
                 "Threat Id": {
                     "simple": "event.threat_id"
                 },
                 "Title": {
                     "simple": "title"
+                },
+                "Ttp Id": {
+                    "simple": "event.ttp_id"
                 },
                 "name": {
                     "simple": "title"
