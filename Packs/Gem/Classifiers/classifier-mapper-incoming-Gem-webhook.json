@@ -14,7 +14,7 @@
     "logicalVersion": 3,
     "mapping": {
         "Gem Threat": {
-            "dontMapEventToLabels": true,
+            "dontMapEventToLabels": false,
             "internalMapping": {
                 "Account Id": {
                     "simple": "account.name"

@@ -9,54 +9,59 @@
         "Gem Threat": {
             "dontMapEventToLabels": false,
             "internalMapping": {
+                "Account Id": {
+                    "simple": "account.name"
+                },
+                "Account Name": {
+                    "simple": "account.display_name"
+                },
+                "Account Provider": {
+                    "simple": "account.cloud_provider"
+                },
                 "Alert ID": {
-                    "complex": {
-                        "accessor": "alert_id",
-                        "filters": [],
-                        "root": "event",
-                        "transformers": []
-                    }
+                    "simple": "metadata.alert_id"
+                },
+                "Alert Source": {
+                    "simple": "metadata.alert_source"
+                },
+                "Alert Time": {
+                    "simple": "event_datetime"
                 },
                 "Description": {
                     "simple": "description"
                 },
-                "Incident Link": {
+                "Event ID": {
+                    "simple": "metadata.events.[0].id"
+                },
+                "Events Count": {
+                    "simple": "metadata.events_total_count"
+                },
+                "Gem Url": {
                     "simple": "link"
                 },
-                "occurred": {
-                    "complex": {
-                        "filters": [],
-                        "root": "event_datetime",
-                        "transformers": [
-                            {
-                                "args": {
-                                    "add_utc_timezone": {
-                                        "isContext": false,
-                                        "value": {
-                                            "simple": "true"
-                                        }
-                                    },
-                                    "dayfirst": {
-                                        "isContext": false
-                                    },
-                                    "fuzzy": {
-                                        "isContext": false
-                                    },
-                                    "yearfirst": {
-                                        "isContext": false
-                                    }
-                                },
-                                "operator": "DateStringToISOFormat"
-                            }
-                        ]
-                    }
+                "Main Entity Id": {
+                    "simple": "metadata.main_entity.id"
+                },
+                "Main Entity Name": {
+                    "simple": "metadata.main_entity.name"
+                },
+                "Main Entity Type": {
+                    "simple": "metadata.main_entity.type"
+                },
+                "Threat Id": {
+                    "simple": "metadata.threat_id"
+                },
+                "Title": {
+                    "simple": "title"
+                },
+                "Ttp Id": {
+                    "simple": "metadata.ttp_id"
+                },
+                "name": {
+                    "simple": "title"
                 },
                 "severity": {
-                    "complex": {
-                        "filters": [],
-                        "root": "severity",
-                        "transformers": []
-                    }
+                    "simple": "severity"
                 }
             }
         }

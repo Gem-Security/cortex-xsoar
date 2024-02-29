@@ -1,4 +1,7 @@
 category: Cloud Services
+sectionOrder:
+  - Connect
+  - Collect
 commonfields:
   id: Gem
   version: -1
@@ -8,6 +11,7 @@ configuration:
     additionalinfo: "The API endpoint to use for connection (US or EU)"
     name: api_endpoint
     type: 15
+    section: Connect
     required: true
     options:
       - "https://app.gem.security/api/v1"
@@ -16,19 +20,34 @@ configuration:
     additionalinfo: The Service Account ID to use for connection
     name: client_id
     type: 0
+    section: Connect
     required: true
   - display: Service Account Secret
     additionalinfo: The Service Account Secret to use for connection
     name: client_secret
     type: 4
+    section: Connect
     required: true
   - display: Sync incidents 30 days back
-    name: fetch_back
+    name: firstFetch
     type: 8
+    section: Collect
     required: false
   - display: Use system proxy settings
     name: proxy
     type: 8
+    section: Connect
+    required: false
+  - display: Fetch incidents
+    name: isFetch
+    type: 8
+    section: Collect
+    required: false
+  - defaultvalue: "10"
+    display: Maximum number of alerts per fetch
+    name: max_fetch
+    type: 0
+    section: Collect
     required: false
 description: "[Enter a comprehensive, yet concise, description of what the integration does, what use cases it is designed for, etc.]"
 display: Gem
