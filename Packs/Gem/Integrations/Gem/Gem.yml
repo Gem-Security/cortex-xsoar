@@ -102,6 +102,172 @@ script:
         - name: entity_type
           description: The entity type of the threats to return.
           required: false
+      outputs:
+        - contextPath: Gem.ThreatsList.accounts.account_status
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.accounts.cloud_provider
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.accounts.display_name
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.accounts.hierarchy_path.id
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.accounts.hierarchy_path.name
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.accounts.id
+          description: ""
+          type: Number
+        - contextPath: Gem.ThreatsList.accounts.identifier
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.accounts.organization_name
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alert_source
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.accounts.account_status
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.accounts.cloud_provider
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.accounts.display_name
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.accounts.id
+          description: ""
+          type: Number
+        - contextPath: Gem.ThreatsList.alerts.accounts.identifier
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.accounts.organization_name
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.alert_source
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.datetime
+          description: ""
+          type: Date
+        - contextPath: Gem.ThreatsList.alerts.description
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.entities.activity_by_provider
+          description: ""
+          type: Unknown
+        - contextPath: Gem.ThreatsList.alerts.entities.cloud_provider
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.entities.id
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.entities.is_main_entity
+          description: ""
+          type: Boolean
+        - contextPath: Gem.ThreatsList.alerts.entities.is_secondary_entity
+          description: ""
+          type: Boolean
+        - contextPath: Gem.ThreatsList.alerts.entities.resource_id
+          description: ""
+          type: Unknown
+        - contextPath: Gem.ThreatsList.alerts.entities.type
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.id
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.main_alert_id
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.mitre_techniques.id
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.mitre_techniques.technique_name
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.organization_id
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.severity
+          description: ""
+          type: Number
+        - contextPath: Gem.ThreatsList.alerts.severity_text
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.status
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.title
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.alerts.ttp_id
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.assignees
+          description: ""
+          type: Unknown
+        - contextPath: Gem.ThreatsList.category
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.datetime
+          description: ""
+          type: Date
+        - contextPath: Gem.ThreatsList.description
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.entities.activity_by_provider
+          description: ""
+          type: Unknown
+        - contextPath: Gem.ThreatsList.entities.cloud_provider
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.entities.id
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.entities.is_main_entity
+          description: ""
+          type: Boolean
+        - contextPath: Gem.ThreatsList.entities.is_secondary_entity
+          description: ""
+          type: Boolean
+        - contextPath: Gem.ThreatsList.entities.resource_id
+          description: ""
+          type: Unknown
+        - contextPath: Gem.ThreatsList.entities.type
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.id
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.main_alert_id
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.mitre_techniques.id
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.mitre_techniques.technique_name
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.organization_id
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.severity_text
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.status
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.title
+          description: ""
+          type: String
+        - contextPath: Gem.ThreatsList.ttp_id
+          description: ""
+          type: String
 
     - name: gem-get-threat-details
       description: Get details about a specific threat
@@ -109,6 +275,172 @@ script:
         - name: threat_id
           description: The ID of the threat to get details for.
           required: true
+      outputs:
+        - contextPath: Gem.Threat.accounts.account_status
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.accounts.cloud_provider
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.accounts.display_name
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.accounts.hierarchy_path.id
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.accounts.hierarchy_path.name
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.accounts.id
+          description: ""
+          type: Number
+        - contextPath: Gem.Threat.accounts.identifier
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.accounts.organization_name
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alert_source
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.accounts.account_status
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.accounts.cloud_provider
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.accounts.display_name
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.accounts.id
+          description: ""
+          type: Number
+        - contextPath: Gem.Threat.alerts.accounts.identifier
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.accounts.organization_name
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.alert_source
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.datetime
+          description: ""
+          type: Date
+        - contextPath: Gem.Threat.alerts.description
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.entities.activity_by_provider
+          description: ""
+          type: Unknown
+        - contextPath: Gem.Threat.alerts.entities.cloud_provider
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.entities.id
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.entities.is_main_entity
+          description: ""
+          type: Boolean
+        - contextPath: Gem.Threat.alerts.entities.is_secondary_entity
+          description: ""
+          type: Boolean
+        - contextPath: Gem.Threat.alerts.entities.resource_id
+          description: ""
+          type: Unknown
+        - contextPath: Gem.Threat.alerts.entities.type
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.id
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.main_alert_id
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.mitre_techniques.id
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.mitre_techniques.technique_name
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.organization_id
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.severity
+          description: ""
+          type: Number
+        - contextPath: Gem.Threat.alerts.severity_text
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.status
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.title
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.alerts.ttp_id
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.assignees
+          description: ""
+          type: Unknown
+        - contextPath: Gem.Threat.category
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.datetime
+          description: ""
+          type: Date
+        - contextPath: Gem.Threat.description
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.entities.activity_by_provider
+          description: ""
+          type: Unknown
+        - contextPath: Gem.Threat.entities.cloud_provider
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.entities.id
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.entities.is_main_entity
+          description: ""
+          type: Boolean
+        - contextPath: Gem.Threat.entities.is_secondary_entity
+          description: ""
+          type: Boolean
+        - contextPath: Gem.Threat.entities.resource_id
+          description: ""
+          type: Unknown
+        - contextPath: Gem.Threat.entities.type
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.id
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.main_alert_id
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.mitre_techniques.id
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.mitre_techniques.technique_name
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.organization_id
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.severity_text
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.status
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.title
+          description: ""
+          type: String
+        - contextPath: Gem.Threat.ttp_id
+          description: ""
+          type: String
 
     - name: gem-list-inventory-resources
       description: List inventory resources in Gem
@@ -266,6 +598,43 @@ script:
         - name: end_time
           description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
           required: true
+      outputs:
+        - contextPath: Gem.IP.AS_NAME
+          description: ""
+          type: String
+        - contextPath: Gem.IP.AS_NUMBER
+          description: ""
+          type: String
+        - contextPath: Gem.IP.CITY
+          description: ""
+          type: String
+        - contextPath: Gem.IP.COUNTRY_CODE
+          description: ""
+          type: String
+        - contextPath: Gem.IP.COUNTRY_NAME
+          description: ""
+          type: String
+        - contextPath: Gem.IP.COUNT_SOURCEIP
+          description: ""
+          type: String
+        - contextPath: Gem.IP.IP_TYPE
+          description: ""
+          type: String
+        - contextPath: Gem.IP.IS_PRIVATE
+          description: ""
+          type: String
+        - contextPath: Gem.IP.LATITUDE
+          description: ""
+          type: String
+        - contextPath: Gem.IP.LONGITUDE
+          description: ""
+          type: String
+        - contextPath: Gem.IP.PROVIDER
+          description: ""
+          type: String
+        - contextPath: Gem.IP.SOURCEIPADDRESS
+          description: ""
+          type: String
 
     - name: gem-list-services-by-entity
       description: List all services accessed by an entity in a specific timeframe. The results are sorted by activity volume.
@@ -287,7 +656,13 @@ script:
         - name: end_time
           description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
           required: true
-
+      outputs:
+        - contextPath: Gem.Entity.By.Services.COUNT_SERVICE
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.By.Services.SERVICE
+          description: ""
+          type: String
     - name: gem-list-events-by-entity
       description: List all events performed by an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
@@ -308,7 +683,13 @@ script:
         - name: end_time
           description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
           required: true
-
+      outputs:
+        - contextPath: Gem.Entity.By.Events.EVENTNAME
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.By.Events.EVENTNAME_COUNT
+          description: ""
+          type: String
     - name: gem-list-accessing-entities
       description: List all entities that accessed an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
@@ -329,6 +710,13 @@ script:
         - name: end_time
           description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
           required: true
+      outputs:
+        - contextPath: Gem.Entity.Accessing.USER_COUNT
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.Accessing.USER_ID
+          description: ""
+          type: String
 
     - name: gem-list-using-entities
       description: List all entities that used an entity in a specific timeframe. The results are sorted by activity volume.
@@ -350,6 +738,13 @@ script:
         - name: end_time
           description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
           required: true
+      outputs:
+        - contextPath: Gem.Entity.Accessing.USER_COUNT
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.Accessing.USER_ID
+          description: ""
+          type: String
 
     - name: gem-list-events-on-entity
       description: List all events performed on an entity in a specific timeframe. The results are sorted by activity volume.
@@ -371,6 +766,14 @@ script:
         - name: end_time
           description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
           required: true
+      outputs:
+        - contextPath: Gem.Entity.On.Events.EVENTNAME
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.On.Events.EVENTNAME_COUNT
+          description: ""
+          type: String
+
     - name: gem-list-accessing-ips
       description: List all source IP addresses that accessed an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
@@ -391,6 +794,43 @@ script:
         - name: end_time
           description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
           required: true
+      outputs:
+        - contextPath: Gem.Entity.Accessing.IPs.AS_NAME
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.Accessing.IPs.AS_NUMBER
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.Accessing.IPs.CITY
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.Accessing.IPs.COUNTRY_CODE
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.Accessing.IPs.COUNTRY_NAME
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.Accessing.IPs.COUNT_SOURCEIP
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.Accessing.IPs.IP_TYPE
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.Accessing.IPs.IS_PRIVATE
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.Accessing.IPs.LATITUDE
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.Accessing.IPs.LONGITUDE
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.Accessing.IPs.PROVIDER
+          description: ""
+          type: String
+        - contextPath: Gem.Entity.Accessing.IPs.SOURCEIPADDRESS
+          description: ""
+          type: String
 
     - name: gem-update-threat-status
       description: Set a threat's status to open, in progress or resolved.

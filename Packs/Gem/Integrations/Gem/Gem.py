@@ -343,8 +343,8 @@ def get_threat_details(client: GemClient, args: dict[str, Any]) -> CommandResult
     result = client.get_threat_details(threat_id=threat_id)
 
     return CommandResults(
-        readable_output=tableToMarkdown('Alert', result),
-        outputs_prefix='Gem.Alert',
+        readable_output=tableToMarkdown('Threat', result),
+        outputs_prefix='Gem.Threat',
         outputs_key_field='id',
         outputs=result
     )
@@ -390,10 +390,10 @@ def list_threats(client: GemClient, args: dict[str, Any]) -> CommandResults:
                                  ordering=ordering, status=status, ttp_id=ttp_id, title=title, severity=severity,
                                  entity_type=entity_type, cloud_provider=cloud_provider)
 
-    demisto.debug(f"Got {len(result)} Alerts")
+    demisto.debug(f"Got {len(result)} Threats")
     return CommandResults(
-        readable_output=tableToMarkdown('Alerts', result),
-        outputs_prefix='Gem.Alert',
+        readable_output=tableToMarkdown('Threats', result),
+        outputs_prefix='Gem.ThreatsList',
         outputs_key_field='id',
         outputs=result
     )
@@ -427,7 +427,7 @@ def _parse_breakdown_result(result: dict) -> tuple[list[str], list[list[str]], l
     for r in result['rows']:
         new_t.append(r['row'])
 
-    return result['headers'], new_t, result['rows']
+    return result['headers'], new_t, new_t
 
 
 def list_ips_by_entity(client: GemClient, args: dict[str, Any]) -> CommandResults:
@@ -440,7 +440,7 @@ def list_ips_by_entity(client: GemClient, args: dict[str, Any]) -> CommandResult
 
     return CommandResults(
         readable_output=tableToMarkdown('IPs', rows, headers=headers),
-        outputs_prefix='Gem.Alert',
+        outputs_prefix='Gem.IP',
         outputs_key_field='SOURCEIPADDRESS',
         outputs=outputs
     )
@@ -456,7 +456,7 @@ def list_services_by_entity(client: GemClient, args: dict[str, Any]) -> CommandR
 
     return CommandResults(
         readable_output=tableToMarkdown('Services', rows, headers=headers),
-        outputs_prefix='Gem.Alert',
+        outputs_prefix='Gem.Entity.By.Services',
         outputs_key_field='SERVICE',
         outputs=outputs
     )
@@ -472,7 +472,7 @@ def list_events_by_entity(client: GemClient, args: dict[str, Any]) -> CommandRes
 
     return CommandResults(
         readable_output=tableToMarkdown('Events by Entity', rows, headers=headers),
-        outputs_prefix='Gem.Alert',
+        outputs_prefix='Gem.Entity.By.Events',
         outputs_key_field='EVENTNAME',
         outputs=outputs
     )
@@ -488,7 +488,7 @@ def list_accessing_entities(client: GemClient, args: dict[str, Any]) -> CommandR
 
     return CommandResults(
         readable_output=tableToMarkdown('Accessing Entities', rows, headers=headers),
-        outputs_prefix='Gem.Alert',
+        outputs_prefix='Gem.Entity.Accessing',
         outputs_key_field='',
         outputs=outputs
     )
@@ -504,7 +504,7 @@ def list_using_entities(client: GemClient, args: dict[str, Any]) -> CommandResul
 
     return CommandResults(
         readable_output=tableToMarkdown('Using Entities', rows, headers=headers),
-        outputs_prefix='Gem.Alert',
+        outputs_prefix='Gem.Entity.Using',
         outputs_key_field='ENTITY_ID',
         outputs=outputs
     )
@@ -520,7 +520,7 @@ def list_events_on_entity(client: GemClient, args: dict[str, Any]) -> CommandRes
 
     return CommandResults(
         readable_output=tableToMarkdown('Events on Entity', rows, headers=headers),
-        outputs_prefix='Gem.Alert',
+        outputs_prefix='Gem.Entity.On.Events',
         outputs_key_field='EVENTNAME',
         outputs=outputs
     )
@@ -536,8 +536,8 @@ def list_accessing_ips(client: GemClient, args: dict[str, Any]) -> CommandResult
 
     return CommandResults(
         readable_output=tableToMarkdown('IPs Accessing Entity', rows, headers=headers),
-        outputs_prefix='Gem.Alert',
-        outputs_key_field='EVENTNAME',
+        outputs_prefix='Gem.Entity.Accessing.IPs',
+        outputs_key_field='AS_NAME',
         outputs=outputs
     )
 
