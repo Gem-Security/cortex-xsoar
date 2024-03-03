@@ -1,0 +1,17 @@
+comment: "Post Processing Script that will resolve the relevant threat in the Gem platform."
+commonfields:
+  id: ResovleGemThreat
+  version: -1
+dockerimage: demisto/python3:3.10.12.63474
+enabled: true
+name: ResovleGemThreat
+runas: DBotWeakRole
+script: ""
+scripttarget: 0
+subtype: python3
+tags:
+  - post-processing
+type: python
+fromversion: 6.8.0
+tests:
+  - No tests (auto formatted)

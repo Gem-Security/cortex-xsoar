@@ -1,7 +1,7 @@
 {
     "fromVersion": "5.0.0",
     "autorun": true,
-    "closureScript": "",
+    "closureScript": "ResovleGemThreat",
     "color": "#32EAC2",
     "days": 0,
     "daysR": 0,
@@ -12,7 +12,7 @@
     "id": "Gem Threat",
     "locked": false,
     "name": "Gem Threat",
-    "playbookId": "Handle Gem Threat",
+    "playbookId": "",
     "preProcessingScript": "",
     "readonly": false,
     "reputationCalc": 0,

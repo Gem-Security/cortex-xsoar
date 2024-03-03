@@ -71,7 +71,7 @@
                     "simple": "title"
                 },
                 "severity": {
-                    "simple": "severity"
+                    "simple": "severity_text"
                 }
             }
         }
