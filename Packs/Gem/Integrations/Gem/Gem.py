@@ -190,6 +190,18 @@ class GemClient(BaseClient):
 
     def list_inventory_resources(self, limit, include_deleted=None, region=None, resource_type=None,
                                  search=None) -> list[dict]:
+        """List inventory resources
+
+        Args:
+            limit (int): How many resources to fetch
+            include_deleted (boolean, optional): Should include deleted resources. Defaults to None.
+            region (str, optional): Resources region. Defaults to None.
+            resource_type (str, optional): Filter resource types. Defaults to None.
+            search (str, optional): Filter search params. Defaults to None.
+
+        Returns:
+            list[dict]: List of inventory resources
+        """
         results = []
         results_fetched = 0
         params = {'page_size': limit if limit < PAGE_SIZE else PAGE_SIZE, 'include_deleted': include_deleted, 'region': region,
@@ -222,6 +234,7 @@ class GemClient(BaseClient):
         return results
 
     def _breakdown(self, breakdown_by, entity_id=None, entity_type=None, read_only=None, start_time=None, end_time=None) -> dict:
+
         params = {'breakdown_by': breakdown_by, 'entity_id': entity_id, 'entity_type': entity_type, 'read_only': read_only,
                   'start_time': start_time, 'end_time': end_time}
         response = self.http_request(
