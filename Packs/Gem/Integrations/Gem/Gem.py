@@ -27,6 +27,8 @@ EVENTS_ENDPOINT = '../triage/investigation/entity/events'
 
 UPDATE_THREAT_ENDPOINT = '../detection/threats/{id}/update_threat_status_v2'
 
+RUN_ACTION_ENDPOINT = '../triage/containment/entity/run-action'
+
 
 ''' CLIENT CLASS '''
 
@@ -284,6 +286,18 @@ class GemClient(BaseClient):
             method='PATCH',
             url_suffix=UPDATE_THREAT_ENDPOINT.format(id=threat_id),
             json_data=json_data
+        )
+
+        return response
+    def run_action_on_entity(self, action: str, entity_id: str, entity_type: str, alert_id: str,
+                             resource_id: str) -> dict:
+        params = {'action': action, 'entity_id': entity_id, 'entity_type': entity_type,
+                  'alert_id': alert_id, 'resource_id': resource_id}
+
+        response = self.http_request(
+            method='POST',
+            url_suffix=RUN_ACTION_ENDPOINT,
+            params={k: v for k, v in params.items() if v is not None}
         )
 
         return response
@@ -566,6 +580,36 @@ def update_threat_status(client: GemClient, args: dict[str, Any]):
     client.update_threat_status(threat_id=threat_id, status=status, verdict=verdict, reason=reason)
 
 
+def run_action_on_entity(client: GemClient, args: dict[str, Any]) -> CommandResults:
+
+    action = args.get('action')
+    entity_id = args.get('entity_id')
+    entity_type = args.get('entity_type')
+    alert_id = args.get('alert_id')
+    resource_id = args.get('resource_id')
+
+    if not action:
+        raise DemistoException('Action is a required parameter.')
+    if not entity_id:
+        raise DemistoException('Entity ID is a required parameter.')
+    if not entity_type:
+        raise DemistoException('Entity type is a required parameter.')
+    if not alert_id:
+        raise DemistoException('Alert ID is a required parameter.')
+    if not resource_id:
+        raise DemistoException('Resource ID is a required parameter.')
+
+    result = client.run_action_on_entity(action=action, entity_id=entity_id, entity_type=entity_type, alert_id=alert_id,
+                                         resource_id=resource_id,)
+
+    return CommandResults(
+        readable_output=tableToMarkdown('Run Result', result),
+        outputs_prefix='Gem.Run',
+        outputs_key_field='id',
+        outputs=result
+    )
+
+
 ''' MAIN FUNCTION '''
 
 
@@ -616,6 +660,8 @@ def main() -> None:
             return_results(list_accessing_ips(client, args))
         elif command == 'gem-update-threat-status':
             return_results(update_threat_status(client, args))
+        elif command == 'gem-run-action':
+            return_results(run_action_on_entity(client, args))
         elif command == 'fetch-incidents':
             fetch_threats(client)
         else:
