@@ -22,7 +22,7 @@
 	"group": 0,
 	"hidden": false,
 	"id": "incident_gemaccountprovider",
-	"isReadOnly": false,
+	"isReadOnly": true,
 	"itemVersion": "",
 	"locked": false,
 	"mergeStrategy": "",
