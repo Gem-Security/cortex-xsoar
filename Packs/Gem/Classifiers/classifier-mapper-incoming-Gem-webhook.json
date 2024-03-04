@@ -31,7 +31,7 @@
                 "Gem Alert Source": {
                     "simple": "event.alert_source"
                 },
-                "Occurred": {
+                "occurred": {
                     "simple": "event_datetime"
                 },
                 "Description": {
@@ -72,6 +72,14 @@
                 },
                 "Gem Severity": {
                     "simple": "severity"
+                }
+            }
+        },
+        "dbot_classification_incident_type_all": {
+            "dontMapEventToLabels": false,
+            "internalMapping": {
+                "occurred": {
+                    "simple": "event_datetime"
                 }
             }
         }
