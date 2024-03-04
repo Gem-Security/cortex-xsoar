@@ -1,0 +1,129 @@
+id: 'Gem Stop ec2 and Resolve'
+inputs: []
+name: Gem Stop ec2 and Resolve
+outputs: []
+starttaskid: "0"
+tasks:
+  "0":
+    continueonerrortype: ""
+    id: "0"
+    ignoreworker: false
+    isautoswitchedtoquietmode: false
+    isoversize: false
+    nexttasks:
+      '#none#':
+      - "2"
+    note: false
+    quietmode: 0
+    separatecontext: false
+    skipunavailable: false
+    task:
+      brand: ""
+      id: 4e30bc53-839e-475a-8995-370d20bbb09d
+      iscommand: false
+      name: ""
+      version: -1
+    taskid: 4e30bc53-839e-475a-8995-370d20bbb09d
+    timertriggers: []
+    type: start
+    view: |-
+      {
+        "position": {
+          "x": 450,
+          "y": 50
+        }
+      }
+  "2":
+    continueonerrortype: ""
+    id: "2"
+    ignoreworker: false
+    isautoswitchedtoquietmode: false
+    isoversize: false
+    nexttasks:
+      '#none#':
+      - "3"
+    note: false
+    quietmode: 0
+    scriptarguments:
+      action:
+        simple: stop
+      alert_id:
+        simple: ${incident.gemalertid}
+      entity_id:
+        simple: ${incident.gemmainentityid}
+      entity_type:
+        simple: ${incident.gemmainentitytype}
+      resource_id:
+        simple: ${incident.gemmainentityid}
+    separatecontext: false
+    skipunavailable: false
+    task:
+      brand: Gem
+      description: Run an action on an entity.
+      id: 785239f0-3684-4c2c-8fae-b5dce369186b
+      iscommand: true
+      name: gem-run-action
+      script: Gem|||gem-run-action
+      type: regular
+      version: -1
+    taskid: 785239f0-3684-4c2c-8fae-b5dce369186b
+    timertriggers: []
+    type: regular
+    view: |-
+      {
+        "position": {
+          "x": 450,
+          "y": 410
+        }
+      }
+  "3":
+    continueonerrortype: ""
+    id: "3"
+    ignoreworker: false
+    isautoswitchedtoquietmode: false
+    isoversize: false
+    note: false
+    quietmode: 0
+    scriptarguments:
+      reason:
+        simple: 'Stopped ec2 instance '
+      status:
+        simple: resolved
+      threat_id:
+        simple: ${incident.gemthreatid}
+      verdict:
+        simple: inconclusive
+    separatecontext: false
+    skipunavailable: false
+    task:
+      brand: Gem
+      description: Set a threat's status to open, in progress or resolved.
+      id: 3b839c36-4127-4df4-859b-a4e35856f947
+      iscommand: true
+      name: gem-update-threat-status
+      script: Gem|||gem-update-threat-status
+      type: regular
+      version: -1
+    taskid: 3b839c36-4127-4df4-859b-a4e35856f947
+    timertriggers: []
+    type: regular
+    view: |-
+      {
+        "position": {
+          "x": 450,
+          "y": 590
+        }
+      }
+version: -1
+view: |-
+  {
+    "linkLabelsPosition": {},
+    "paper": {
+      "dimensions": {
+        "height": 635,
+        "width": 380,
+        "x": 450,
+        "y": 50
+      }
+    }
+  }
