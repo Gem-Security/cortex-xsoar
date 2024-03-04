@@ -26,7 +26,7 @@
 	"itemVersion": "",
 	"locked": false,
 	"mergeStrategy": "",
-	"name": "Gem Url",
+	"name": "Gem URL",
 	"neverSetAsRequired": false,
 	"openEnded": false,
 	"orgType": "url",

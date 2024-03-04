@@ -16,55 +16,52 @@
         "Gem Threat": {
             "dontMapEventToLabels": false,
             "internalMapping": {
-                "Account Id": {
+                "Gem Account ID": {
                     "simple": "account.name"
                 },
-                "Account Name": {
+                "Gem Account Name": {
                     "simple": "account.display_name"
                 },
-                "Account Provider": {
+                "Gem Account Provider": {
                     "simple": "account.cloud_provider"
                 },
-                "Alert ID": {
+                "Gem Alert ID": {
                     "simple": "event.alert_id"
                 },
-                "Alert Source": {
+                "Gem Alert Source": {
                     "simple": "event.alert_source"
                 },
-                "Alert Time": {
-                    "simple": "event.created_at"
+                "Occurred": {
+                    "simple": "event_datetime"
                 },
                 "Description": {
                     "simple": "description"
                 },
-                "Event Time": {
-                    "simple": "event_datetime"
-                },
-                "Events Count": {
+                "Gem Events Count": {
                     "simple": "event.events_total_count"
                 },
-                "Gem Url": {
+                "Gem URL": {
                     "simple": "link"
                 },
-                "Main Entity Id": {
+                "Gem Main Entity ID": {
                     "simple": "event.main_entity.id"
                 },
-                "Main Entity Name": {
+                "Gem Main Entity Name": {
                     "simple": "event.main_entity.name"
                 },
-                "Main Entity Region": {
+                "Gem Main Entity Region": {
                     "simple": "event.main_entity.metadata.region"
                 },
-                "Main Entity Type": {
+                "Gem Main Entity Type": {
                     "simple": "event.main_entity.type"
                 },
-                "Threat Id": {
+                "Gem Threat ID": {
                     "simple": "event.threat_id"
                 },
-                "Title": {
+                "Gem Title": {
                     "simple": "title"
                 },
-                "Ttp Id": {
+                "Gem TTP ID": {
                     "simple": "event.ttp_id"
                 },
                 "name": {
@@ -72,6 +69,9 @@
                 },
                 "severity": {
                     "simple": "severity_text"
+                },
+                "Gem Severity": {
+                    "simple": "severity"
                 }
             }
         }
