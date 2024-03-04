@@ -49,7 +49,7 @@ configuration:
     type: 0
     section: Collect
     required: false
-description: "[Enter a comprehensive, yet concise, description of what the integration does, what use cases it is designed for, etc.]"
+description: "Use Gem alerts as a trigger for Cortex XSOAR’s custom playbooks, to automate response to specific TTPs"
 display: Gem
 name: Gem
 script:

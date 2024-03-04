@@ -1,4 +1,4 @@
-[Enter a comprehensive, yet concise, description of what the integration does, what use cases it is designed for, etc.]
+Use Gem alerts as a trigger for Cortex XSOAR’s custom playbooks, to automate response to specific TTPs
 This integration was integrated and tested with version xx of Gem.
 
 ## Configure Gem on Cortex XSOAR
