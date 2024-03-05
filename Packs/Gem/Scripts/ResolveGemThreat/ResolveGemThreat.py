@@ -5,8 +5,11 @@ def main():
     incident = demisto.incident()
     # incident.get("closeReason", "")
     close_notes = incident.get("closeNotes", "")
+    close_notes = close_notes if close_notes else demisto.params().get("closeNotes", "")
+
     incident_id = incident.get("id", "")
     threat_id = incident.get("CustomFields").get("gemthreatid")
+
     verdict = incident.get("CustomFields").get("gemverdict")
     verdict = verdict if verdict else "inconclusive"
     verdict = verdict.replace(" ", "_").lower()
