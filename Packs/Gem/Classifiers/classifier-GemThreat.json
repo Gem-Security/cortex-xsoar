@@ -1,6 +1,6 @@
 {
     "id": "Gem Classifier",
-    "name": "Gem - Classification",
+    "name": "Gem Classifier",
     "type": "classification",
     "defaultIncidentType": "Gem Threat",
     "description": "Classifies Gem Threats.",

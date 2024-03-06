@@ -13,8 +13,9 @@ urllib3.disable_warnings()
 ''' CONSTANTS '''
 
 DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'  # ISO8601 format with UTC, default in XSOAR
-PAGE_SIZE = 5
+PAGE_SIZE = 10
 OK_CODES = (200, 201, 202)
+MAX_ALERTS_TO_FETCH = 50
 
 # ENDPOINTS
 TOKEN_URL = 'https://login.gem.security/oauth/token'
@@ -24,6 +25,7 @@ INVENTORY_ENDPOINT = '/inventory'
 INVENTORY_ITEM_ENDPOINT = '/inventory/{id}'
 BREAKDOWN_ENDPOINT = '../triage/investigation/timeline/breakdown'
 EVENTS_ENDPOINT = '../triage/investigation/entity/events'
+FETCH_ENDPOINT = '../integrations/notification'
 
 UPDATE_THREAT_ENDPOINT = '../detection/threats/{id}/update_threat_status_v2'
 
@@ -106,6 +108,15 @@ class GemClient(BaseClient):
         set_integration_context((get_integration_context() or {}).update({'auth_token': token_res.get('access_token')}))
 
         return token_res.get('access_token')
+
+    def fetch_threats(self, maxincidents=None, start_time=None) -> list[dict]:
+        params = {'limit': maxincidents, 'created__gt': start_time, 'ordering': 'created'}
+        return self.http_request(
+            method='GET',
+            url_suffix=FETCH_ENDPOINT,
+            params={k: v for k, v in params.items() if v is not None}
+
+        )
 
     def get_resource_details(self, resource_id: str) -> dict:
         """ Get inventory item details
@@ -322,10 +333,37 @@ def init_client(params: dict) -> GemClient:
 ''' COMMAND FUNCTIONS '''
 
 
-def fetch_threats(client: GemClient, maxincidents=None, firstfetch=None, severity=None, start_time=None, category=None,
-                  accounts=None, status=None, assignee=None, mitre_technique_id=None, threat_source=None, entity_type=None,
-                  ttp_id=None, provider=None) -> None:
-    pass
+def fetch_threats(client: GemClient, max_results: int, last_run: dict, first_fetch_time: str) -> tuple[dict, list[dict]]:
+    last_fetch = last_run.get('last_fetch', None)
+    if last_fetch is None:
+        # if missing, use what provided via first_fetch_time
+        last_fetch = first_fetch_time
+    else:
+        # otherwise use the stored last fetch
+        last_fetch = last_fetch
+    demisto.debug(f"Last fetch time: {last_fetch}")
+    incidents: list[dict[str, Any]] = []
+
+    for _ in range(0, int(max_results / PAGE_SIZE) + 1):
+        results = client.fetch_threats(maxincidents=PAGE_SIZE, start_time=last_fetch)
+        for r in results:
+            incident = {
+                'name': r['title'],        # name is required field, must be set
+                'occurred': r['created'],  # must be string of a format ISO8601
+                'dbotMirrorId': str(r['id']),  # must be a string
+                'severity': int(int(r['severity']) / 2),
+                'rawJSON': json.dumps(r)  # the original event, this will allow mapping of the event in the mapping stage.
+            }
+            incidents.append(incident)
+        demisto.debug(f"Fetched {len(incidents)} incidents")
+        if incidents:
+            last_fetch = incidents[-1].get('occurred')
+
+    demisto.debug(f"Last fetch time: {last_fetch}")
+    assert last_fetch
+    last_run['last_fetch'] = last_fetch
+
+    return last_run, incidents
 
 
 def test_module(params: dict[str, Any]) -> str:
@@ -624,9 +662,8 @@ def main() -> None:
     args = demisto.args()
     command = demisto.command()
 
-    # TODO: Implement fetch_incidents, use fetch_back param to determine if to fetch 30 days back
-    # Whether to fetch incident 30 days back on initial fetch
-    params.get('fetch_back', False)
+    demisto.debug(f"args {args}")
+    demisto.debug(f"params {params}")
 
     demisto.debug(f'Command being called is {command}')
     try:
@@ -663,7 +700,36 @@ def main() -> None:
         elif command == 'gem-run-action':
             return_results(run_action_on_entity(client, args))
         elif command == 'fetch-incidents':
-            fetch_threats(client)
+            # How much time before the first fetch to retrieve alerts
+            first_fetch_time = arg_to_datetime(
+                arg=params.get('first_fetch', '30 days'),
+                arg_name='First fetch time',
+                required=True
+            )
+            assert first_fetch_time
+
+            max_results = arg_to_number(
+                arg=params.get('max_fetch'),
+                arg_name='max_fetch',
+                required=False
+            )
+            if not max_results or max_results > MAX_ALERTS_TO_FETCH:
+                max_results = MAX_ALERTS_TO_FETCH
+
+            next_run, incidents = fetch_threats(
+                client=client,
+                max_results=max_results,
+                last_run=demisto.getLastRun(),  # getLastRun() gets the last run dict
+                first_fetch_time=datetime.strftime(first_fetch_time, DATE_FORMAT))
+
+            demisto.debug(f'Fetched {len(incidents)} incidents')
+            demisto.debug(f'Next run: {next_run}')
+            # saves next_run for the time fetch-incidents is invoked
+            demisto.setLastRun(next_run)
+            # fetch-incidents calls ``demisto.incidents()`` to provide the list
+            # of incidents to create
+            demisto.incidents(incidents)
+
         else:
             raise NotImplementedError(f'Command {command} is not implemented')
 

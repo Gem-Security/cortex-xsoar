@@ -5,9 +5,17 @@ sectionOrder:
 commonfields:
   id: Gem
   version: -1
+defaultmapperin: Gem Mapper
+defaultclassifier: Gem Classifier
 configuration:
-  - defaultvalue: "https://app.gem.security/api/v1"
-    display: API Endpoint
+  - display: Incident type
+    name: incidentType
+    type: 13
+    defaultvalue: Gem Threat
+    section: Connect
+    required: false
+  - display: API Endpoint
+    defaultvalue: "https://app.gem.security/api/v1"
     additionalinfo: "The API endpoint to use for connection (US or EU)"
     name: api_endpoint
     type: 15
@@ -41,10 +49,15 @@ configuration:
   - display: Fetch incidents
     name: isFetch
     type: 8
+    section: Connect
+    required: false
+  - display: Get incidents from webhook
+    name: isWebhook
+    type: 8
     section: Collect
     required: false
-  - defaultvalue: "10"
-    display: Maximum number of alerts per fetch
+  - display: Maximum number of alerts per fetch
+    defaultvalue: 10
     name: max_fetch
     type: 0
     section: Collect
@@ -897,12 +910,12 @@ script:
         - name: resource_id
           description: The ID of the resource to run the action on.
           required: true
-
+  isfetch: true
   runonce: false
   script: "-"
   type: python
   subtype: python3
   dockerimage: demisto/auth-utils:1.0.0.76157 # TODO: This docker image was selected since it contains the "jwt" package. Double check if it's the correct one.
-fromversion: 5.5.0
+fromversion: 6.8.0
 tests:
   - No tests

@@ -84,8 +84,8 @@
             }
         }
     },
-    "id": "Gem-mapper-webhook",
-    "name": "Gem - Incoming Mapper Webhook",
+    "id": "Gem Mapper Webhook",
+    "name": "Gem Mapper Webhook",
     "type": "mapping-incoming",
     "description": "Maps incoming Gem Threat fields when received via webhook.",
     "packID": "",

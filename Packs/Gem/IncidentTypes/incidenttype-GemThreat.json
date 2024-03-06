@@ -1,7 +1,7 @@
 {
     "fromVersion": "5.0.0",
     "autorun": true,
-    "closureScript": "ResovleGemThreat",
+    "closureScript": "ResolveGemThreat",
     "color": "#32EAC2",
     "days": 0,
     "daysR": 0,

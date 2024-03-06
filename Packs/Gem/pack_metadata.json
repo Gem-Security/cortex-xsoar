@@ -18,7 +18,7 @@
             "name": "Base"
         },
         "GenericWebhook": {
-            "mandatory": true,
+            "mandatory": false,
             "name": "Generic Webhook"
         }
     },
