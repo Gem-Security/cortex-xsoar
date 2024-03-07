@@ -1,67 +1,101 @@
 {
-	"action": "link",
-	"cacheVersn": 0,
-	"definitionId": "",
-	"enabled": true,
-	"existingEventsFilters": [
-		[
-			{
-				"left": {
-					"isContext": true,
-					"value": {
-						"simple": "threatid"
-					}
-				},
-				"operator": "isIdenticalIncident",
-				"right": {
-					"isContext": true,
-					"value": {
-						"simple": "${incident.threatid}"
-					}
-				},
-				"type": "shortText"
-			}
-		]
-	],
-	"fromServerVersion": "",
-	"id": "Gem Alert Merger",
-	"index": 0,
-	"itemVersion": "",
-	"linkTo": "oldest",
-	"locked": false,
-	"name": "Gem Alert Merger",
-	"newEventFilters": [],
-	"packID": "",
-	"packName": "",
-	"period": {
-		"by": "days",
-		"fromValue": 2
-	},
-	"readyExistingEventsFilters": [
-		[
-			{
-				"left": {
-					"isContext": true,
-					"value": {
-						"simple": "threatid"
-					}
-				},
-				"operator": "isIdenticalIncident",
-				"right": {
-					"isContext": true,
-					"value": {
-						"simple": "${incident.threatid}"
-					}
-				},
-				"type": "shortText"
-			}
-		]
-	],
-	"readyNewEventFilters": [],
-	"scriptID": "",
-	"scriptName": "",
-	"searchClosed": true,
-	"system": false,
-	"toServerVersion": "",
-	"version": -1
+    "action": "link",
+    "cacheVersn": 0,
+    "definitionId": "",
+    "enabled": true,
+    "existingEventsFilters": [
+        [
+            {
+                "left": {
+                    "isContext": true,
+                    "value": {
+                        "simple": "gemthreatid"
+                    }
+                },
+                "operator": "isEqualString",
+                "right": {
+                    "isContext": true,
+                    "value": {
+                        "simple": "incident.gemthreatid"
+                    }
+                },
+                "type": "shortText"
+            }
+        ]
+    ],
+    "fromServerVersion": "",
+    "id": "Gem Alert Merger",
+    "index": 2,
+    "itemVersion": "",
+    "linkTo": "oldest",
+    "locked": false,
+    "name": "Gem Alert Merger",
+    "newEventFilters": [
+        [
+            {
+                "left": {
+                    "isContext": true,
+                    "value": {
+                        "simple": "gemthreatid"
+                    }
+                },
+                "operator": "isNotEmpty",
+                "right": {
+                    "isContext": false,
+                    "value": {}
+                },
+                "type": "shortText"
+            }
+        ]
+    ],
+    "packID": "",
+    "packName": "",
+    "period": {
+        "by": "days",
+        "fromValue": 1
+    },
+    "readyExistingEventsFilters": [
+        [
+            {
+                "left": {
+                    "isContext": true,
+                    "value": {
+                        "simple": "gemthreatid"
+                    }
+                },
+                "operator": "isEqualString",
+                "right": {
+                    "isContext": true,
+                    "value": {
+                        "simple": "${incident.gemthreatid}"
+                    }
+                },
+                "type": "shortText"
+            }
+        ]
+    ],
+    "readyNewEventFilters": [
+        [
+            {
+                "left": {
+                    "isContext": true,
+                    "value": {
+                        "simple": "gemthreatid"
+                    }
+                },
+                "operator": "isNotEmpty",
+                "right": {
+                    "isContext": false,
+                    "value": {}
+                },
+                "type": "shortText"
+            }
+        ]
+    ],
+    "scriptID": "",
+    "scriptName": "",
+    "searchClosed": true,
+    "system": false,
+    "toServerVersion": "",
+    "version": -1
 }
