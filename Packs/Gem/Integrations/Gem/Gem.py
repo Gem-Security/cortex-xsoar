@@ -351,7 +351,6 @@ def fetch_threats(client: GemClient, max_results: int, last_run: dict, first_fet
                 'name': r['title'],        # name is required field, must be set
                 'occurred': r['created'],  # must be string of a format ISO8601
                 'dbotMirrorId': str(r['id']),  # must be a string
-                'severity': int(int(r['severity']) / 2),
                 'rawJSON': json.dumps(r)  # the original event, this will allow mapping of the event in the mapping stage.
             }
             incidents.append(incident)
