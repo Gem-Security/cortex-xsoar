@@ -2,8 +2,8 @@
     "id": "Gem Classifier",
     "name": "Gem Classifier",
     "type": "classification",
-    "defaultIncidentType": "Gem Threat",
-    "description": "Classifies Gem Threats.",
+    "defaultIncidentType": "Gem Alert",
+    "description": "Classifies Gem Alerts.",
     "fromVersion": "6.0.0",
     "keyTypeMap": {},
     "transformer": {

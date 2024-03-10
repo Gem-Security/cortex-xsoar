@@ -3,8 +3,8 @@
 	"aliases": null,
 	"associatedToAll": false,
 	"associatedTypes": [
-        "Gem Threat"
-    ],
+		"Gem Alert"
+	],
 	"autoCompleteTags": null,
 	"breachScript": "",
 	"cacheVersn": 0,

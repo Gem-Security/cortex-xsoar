@@ -2,11 +2,11 @@
     "id": "Gem Mapper",
     "name": "Gem Mapper",
     "type": "mapping-incoming",
-    "description": "Maps incoming Gem Threat fields.",
+    "description": "Maps incoming Gem Alert fields.",
     "fromVersion": "6.8.0",
-    "defaultIncidentType": "Gem Threat",
+    "defaultIncidentType": "Gem Alert",
     "mapping": {
-        "Gem Threat": {
+        "Gem Alert": {
             "dontMapEventToLabels": false,
             "internalMapping": {
                 "Description": {

@@ -13,7 +13,7 @@
     "locked": false,
     "logicalVersion": 3,
     "mapping": {
-        "Gem Threat": {
+        "Gem Alert": {
             "dontMapEventToLabels": false,
             "internalMapping": {
                 "Gem Account ID": {
@@ -109,7 +109,7 @@
     "id": "Gem Mapper Webhook",
     "name": "Gem Mapper Webhook",
     "type": "mapping-incoming",
-    "description": "Maps incoming Gem Threat fields when received via webhook.",
+    "description": "Maps incoming Gem Alert fields when received via webhook.",
     "packID": "",
     "packName": "",
     "sourceClassifierId": "",

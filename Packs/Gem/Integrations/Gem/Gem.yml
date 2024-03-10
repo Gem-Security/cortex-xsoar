@@ -11,19 +11,19 @@ configuration:
   - display: Incident type
     name: incidentType
     type: 13
-    defaultvalue: Gem Threat
+    defaultvalue: Gem Alert
     section: Connect
     required: false
   - display: API Endpoint
-    defaultvalue: "https://app.gem.security/api/v1"
+    defaultvalue: "https://app.gem.security/api"
     additionalinfo: "The API endpoint to use for connection (US or EU)"
     name: api_endpoint
     type: 15
     section: Connect
     required: true
     options:
-      - "https://app.gem.security/api/v1"
-      - "https://eu-west-1.app.gem.security/api/v1"
+      - "https://app.gem.security/api"
+      - "https://eu-west-1.app.gem.security/api"
   - display: Service Account ID
     additionalinfo: The Service Account ID to use for connection
     name: client_id
@@ -48,11 +48,6 @@ configuration:
     required: false
   - display: Fetch incidents
     name: isFetch
-    type: 8
-    section: Connect
-    required: false
-  - display: Get incidents from webhook
-    name: isWebhook
     type: 8
     section: Collect
     required: false
@@ -916,6 +911,6 @@ script:
   type: python
   subtype: python3
   dockerimage: demisto/auth-utils:1.0.0.76157 # TODO: This docker image was selected since it contains the "jwt" package. Double check if it's the correct one.
-fromversion: 6.8.0
+fromversion: 6.5.0
 tests:
   - No tests

@@ -7,11 +7,50 @@
     "url": "https://gem.security/",
     "email": "support@gem.security",
     "categories": [
+        "Analytics & SIEM",
+        "Data Enrichment & Threat Intelligence",
+        "Forensics & Malware Analysis",
+        "Network Security",
         "Cloud Services"
     ],
-    "tags": [],
-    "useCases": [],
-    "keywords": [],
+    "tags": [
+        "Alerts",
+        "Attack",
+        "Breach",
+        "Forensics",
+        "IAM",
+        "Incident Handling",
+        "Incident Response",
+        "DevOps",
+        "DevSecOps",
+        "Network",
+        "Security",
+        "Security Analytics",
+        "MITRE ATT&CK",
+        "CDR",
+        "CIRA",
+        "Security Automation",
+        "Investigation",
+        "Cloud Security"
+    ],
+    "useCases": [
+        "Breach Notification",
+        "Identity and Access Management",
+        "Incident Response",
+        "Network Security"
+    ],
+    "keywords": [
+        "Alerts",
+        "Attack",
+        "Breach",
+        "Forensics",
+        "IAM",
+        "Incident Handling",
+        "Incident Response",
+        "Security",
+        "Security Analytics",
+        "MITRE ATT&CK"
+    ],
     "dependencies": {
         "Base": {
             "mandatory": true,
