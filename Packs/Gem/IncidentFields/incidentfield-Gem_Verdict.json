@@ -16,7 +16,7 @@
     "defaultRows": null,
     "definitionId": "",
     "description": "",
-    "editForm": false,
+    "editForm": true,
     "fieldCalcScript": "",
     "fromServerVersion": "",
     "group": 0,

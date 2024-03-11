@@ -19,15 +19,17 @@ MAX_ALERTS_TO_FETCH = 50
 
 # ENDPOINTS
 TOKEN_URL = 'https://login.gem.security/oauth/token'
+
 THREATS_ENDPOINT = '/v1/threats'
 THREAT_ENDPOINT = '/v1/threats/{id}'
 INVENTORY_ENDPOINT = '/v1/inventory'
 INVENTORY_ITEM_ENDPOINT = '/v1/inventory/{id}'
+
 BREAKDOWN_ENDPOINT = '/triage/investigation/timeline/breakdown'
 EVENTS_ENDPOINT = '/triage/investigation/entity/events'
 FETCH_ENDPOINT = '/integrations/notification'
 
-UPDATE_THREAT_ENDPOINT = '/detection/threats/{id}/update_threat_status_v2'
+UPDATE_THREAT_ENDPOINT = '/v1/threats/{id}/status'
 
 RUN_ACTION_ENDPOINT = '/triage/containment/entity/run-action'
 
@@ -292,7 +294,7 @@ class GemClient(BaseClient):
                                start_time=start_time, end_time=end_time)
 
     def update_threat_status(self, threat_id: str, status: Optional[str], verdict: Optional[str], reason: Optional[str] = None):
-        json_data = {"resolved_metadata": {'verdict': verdict, 'reason': reason}, 'status': status}
+        json_data = {'verdict': verdict, 'additional_info': reason, 'status': status}
         response = self.http_request(
             method='PATCH',
             url_suffix=UPDATE_THREAT_ENDPOINT.format(id=threat_id),

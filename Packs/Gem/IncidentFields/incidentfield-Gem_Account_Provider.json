@@ -10,7 +10,7 @@
 	"cacheVersn": 0,
 	"caseInsensitive": true,
 	"cliName": "gemaccountprovider",
-	"closeForm": false,
+	"closeForm": true,
 	"columns": null,
 	"content": false,
 	"defaultRows": null,
