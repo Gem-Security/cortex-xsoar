@@ -38,12 +38,11 @@
     "runScriptAfterUpdate": false,
     "script": "",
     "selectValues": [
-        "",
+        "Inconclusive",
         "Malicious",
         "Security Test",
         "Planned action",
-        "Not malicious",
-        "Inconclusive"
+        "Not malicious"
     ],
     "sla": 0,
     "system": false,
