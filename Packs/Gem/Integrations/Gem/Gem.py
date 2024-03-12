@@ -70,7 +70,7 @@ class GemClient(BaseClient):
             headers = headers or {}
             headers['Authorization'] = f'Bearer {self._auth_token}'
         try:
-            return super()._http_request(
+            response = super()._http_request(
                 method=method,
                 url_suffix=url_suffix,
                 full_url=full_url,
@@ -79,6 +79,8 @@ class GemClient(BaseClient):
                 params=params,
                 raise_on_status=True
             )
+            demisto.debug(f"Got response: {response}")
+            return response
         except DemistoException as e:
             demisto.error(f"Failed to execute {method} request to {url_suffix}. Error: {str(e)}")
             raise Exception(f"Failed to execute {method} request to {url_suffix}. Error: {str(e)}")
