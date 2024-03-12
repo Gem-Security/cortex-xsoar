@@ -54,8 +54,28 @@
                 "Gem Title": {
                     "simple": "title"
                 },
-                "Gem URL": {
-                    "simple": "link"
+                "Gem Url": {
+                    "complex": {
+                        "accessor": "threat_id",
+                        "filters": [],
+                        "root": "metadata",
+                        "transformers": [
+                            {
+                                "args": {
+                                    "prefix": {
+                                        "isContext": false,
+                                        "value": {
+                                            "simple": "https://app.gem.security/threats/"
+                                        }
+                                    },
+                                    "suffix": {
+                                        "isContext": false
+                                    }
+                                },
+                                "operator": "concat"
+                            }
+                        ]
+                    }
                 },
                 "name": {
                     "simple": "title"

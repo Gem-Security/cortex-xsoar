@@ -3,7 +3,7 @@ from CommonServerPython import *  # noqa: F401
 
 def main():
     incident = demisto.incident()
-    # incident.get("closeReason", "")
+    close_reason = incident.get("closeReason", "")
     close_notes = incident.get("closeNotes", "")
     close_notes = close_notes if close_notes else demisto.args().get("closeNotes", "")
 
@@ -20,6 +20,7 @@ def main():
     demisto.executeCommand("gem-update-threat-status", {
         "verdict": verdict,
         "reason": f"Closed from XSOAR, incident id: {incident_id}\n"
+        f"\nClose Reason:\n{close_reason}"
         f"\nClose Notes:\n{close_notes}",
         "threat_id": threat_id,
         "status": status})

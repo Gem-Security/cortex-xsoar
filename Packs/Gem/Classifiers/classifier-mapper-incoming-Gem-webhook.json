@@ -40,8 +40,28 @@
                 "Gem Events Count": {
                     "simple": "event.events_total_count"
                 },
-                "Gem URL": {
-                    "simple": "link"
+                "Gem Url": {
+                    "complex": {
+                        "accessor": "threat_id",
+                        "filters": [],
+                        "root": "event",
+                        "transformers": [
+                            {
+                                "args": {
+                                    "prefix": {
+                                        "isContext": false,
+                                        "value": {
+                                            "simple": "https://app.gem.security/threats/"
+                                        }
+                                    },
+                                    "suffix": {
+                                        "isContext": false
+                                    }
+                                },
+                                "operator": "concat"
+                            }
+                        ]
+                    }
                 },
                 "Gem Main Entity ID": {
                     "simple": "event.main_entity.id"
