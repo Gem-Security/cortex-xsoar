@@ -875,7 +875,7 @@ script:
             - resolved
         - name: verdict
           description: The verdict of the threat.
-          required: true
+          required: false
           auto: PREDEFINED
           predefined:
             - malicious

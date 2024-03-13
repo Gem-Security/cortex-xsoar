@@ -1,5 +1,4 @@
 {
-    "cacheVersn": 0,
     "close": {
         "sections": [
             {
@@ -38,12 +37,7 @@
             }
         ]
     },
-    "definitionId": "",
-    "description": "",
-    "detached": false,
-    "details": null,
     "detailsV2": {
-        "TypeName": "",
         "tabs": [
             {
                 "id": "summary",
@@ -479,21 +473,11 @@
             }
         ]
     },
-    "edit": null,
-    "fromServerVersion": "",
     "group": "incident",
     "id": "Gem Layout",
-    "indicatorsDetails": null,
-    "indicatorsQuickView": null,
-    "itemVersion": "",
-    "locked": false,
-    "mobile": null,
     "name": "Gem Layout",
-    "packID": "",
-    "packName": "",
-    "quickView": null,
-    "quickViewV2": null,
     "system": false,
-    "toServerVersion": "",
-    "version": -1
+    "version": -1,
+    "fromVersion": "6.10.0",
+    "description": ""
 }
