@@ -469,6 +469,13 @@ script:
           description: ""
           type: String
 
+    - name: gem-get-alert-details
+      description: Get details about a specific alert
+      arguments:
+        - name: alert_id
+          description: The ID of the alert to get details for.
+          required: true
+
     - name: gem-list-inventory-resources
       description: List inventory resources in Gem
       arguments:
@@ -904,6 +911,16 @@ script:
           required: true
         - name: resource_id
           description: The ID of the resource to run the action on.
+          required: true
+
+    - name: gem-add-timeline-event
+      description: Add a timeline event to a threat.
+      arguments:
+        - name: threat_id
+          description: The ID of the threat to add the timeline event to.
+          required: true
+        - name: comment
+          description: The comment to add to the timeline event.
           required: true
   isfetch: true
   runonce: false

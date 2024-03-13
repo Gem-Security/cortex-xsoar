@@ -25,6 +25,7 @@ THREAT_ENDPOINT = '/v1/threats/{id}'
 INVENTORY_ENDPOINT = '/v1/inventory'
 INVENTORY_ITEM_ENDPOINT = '/v1/inventory/{id}'
 
+ALERTS_ENDPOINT = '/triage/investigation/timeline/configuration'
 BREAKDOWN_ENDPOINT = '/triage/investigation/timeline/breakdown'
 EVENTS_ENDPOINT = '/triage/investigation/entity/events'
 FETCH_ENDPOINT = '/integrations/notification'
@@ -32,6 +33,7 @@ FETCH_ENDPOINT = '/integrations/notification'
 UPDATE_THREAT_ENDPOINT = '/v1/threats/{id}/status'
 
 RUN_ACTION_ENDPOINT = '/triage/containment/entity/run-action'
+ADD_TIMELINE_EVENT_ENDPOINT = '/detection/threats/{id}/add_timeline_event'
 
 
 ''' CLIENT CLASS '''
@@ -304,6 +306,7 @@ class GemClient(BaseClient):
         )
 
         return response
+
     def run_action_on_entity(self, action: str, entity_id: str, entity_type: str, alert_id: str,
                              resource_id: str) -> dict:
         params = {'action': action, 'entity_id': entity_id, 'entity_type': entity_type,
@@ -313,6 +316,16 @@ class GemClient(BaseClient):
             method='POST',
             url_suffix=RUN_ACTION_ENDPOINT,
             params={k: v for k, v in params.items() if v is not None}
+        )
+
+        return response
+
+    def add_timeline_event(self, threatid: str, comment: str, timestamp: str) -> dict:
+        params = {'title': "XSOAR comment", "description": comment, "timeline_event_type": "xsoar", "timestamp": timestamp}
+        response = self.http_request(
+            method='POST',
+            url_suffix=ADD_TIMELINE_EVENT_ENDPOINT.format(id=threatid),
+            json_data={k: v for k, v in params.items() if v is not None}
         )
 
         return response
@@ -651,6 +664,25 @@ def run_action_on_entity(client: GemClient, args: dict[str, Any]) -> CommandResu
     )
 
 
+def add_timeline_event(client: GemClient, args: dict[str, Any]) -> CommandResults:
+
+    threatid = args.get('threat_id')
+    comment = args.get('comment')
+
+    if not threatid:
+        raise DemistoException('Threat ID is a required parameter.')
+    if not comment:
+        raise DemistoException('Comment is a required parameter.')
+
+    result = client.add_timeline_event(threatid=threatid, comment=comment, timestamp=datetime.now().strftime(DATE_FORMAT))
+    return CommandResults(
+        readable_output=tableToMarkdown('AddTimelineEvent Result', result),
+        outputs_prefix='Gem.AddTimelineEvent',
+        outputs_key_field='',
+        outputs=result
+    )
+
+
 ''' MAIN FUNCTION '''
 
 
@@ -702,6 +734,8 @@ def main() -> None:
             return_results(update_threat_status(client, args))
         elif command == 'gem-run-action':
             return_results(run_action_on_entity(client, args))
+        elif command == 'gem-add-timeline-event':
+            return_results(add_timeline_event(client, args))
         elif command == 'fetch-incidents':
             # How much time before the first fetch to retrieve alerts
             first_fetch_time = arg_to_datetime(
