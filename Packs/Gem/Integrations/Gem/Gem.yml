@@ -897,10 +897,10 @@ script:
           description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
           required: true
       outputs:
-        - contextPath: Gem.Entity.Accessing.USER_COUNT
+        - contextPath: Gem.Entity.Using.ENTITY_COUNT
           description: ""
           type: String
-        - contextPath: Gem.Entity.Accessing.USER_ID
+        - contextPath: Gem.Entity.Using.ENTITY_ID
           description: ""
           type: String
 
