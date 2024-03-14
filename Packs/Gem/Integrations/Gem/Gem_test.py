@@ -116,6 +116,111 @@ def test_list_threats(http_request, _generate_token):
     assert res.outputs == test_list_threats_data['results']
 
 
+test_get_alert_details_data = {
+    "alert_context": {
+        "alert_id": "00000000-0000-0000-0000-000000000000",
+        "title": "A title",
+        "timeframe_start": "2023-03-09T12:41:33.000000",
+        "timeframe_end": "2023-03-09T12:41:33.000000",
+        "severity": 6,
+        "resolved": False,
+        "description": "A description",
+        "description_template": "A description",
+        "general_cloud_provider": "aws",
+        "cloud_provider": "aws",
+        "status": "open",
+        "mitre_techniques": [
+            {
+                "technique_name": "A technique",
+                "id": "1111"
+            }
+        ],
+        "ttp_id": "WS/DefenseEvasion:S3/PublicAccessBlockPolicyModified",
+        "account_db_id": "8",
+        "alert_source": "GemDetection",
+        "alert_source_id": None,
+        "alert_source_url": None,
+        "created_at": "2024-01-29T13:35:49.417627Z"
+    },
+    "triage_configuration": {
+        "analysis": "",
+        "entities": [
+            {
+                "id": "Example IAM",
+                "type": "iam_user",
+                "metadata": {
+                    "name": "Example IAM",
+                    "region": "global",
+                    "account_id": None,
+                    "context_from_event": None,
+                    "arn_id": "Example IAM",
+                    "access_key": None,
+                    "user_name": "Example IAM"
+                },
+                "resource_id": None,
+                "is_main_entity": False,
+                "is_secondary_entity": True,
+                "activity_by_provider": {},
+                "cloud_provider": "aws"
+            }
+        ],
+        "event_groups": [
+            {
+                "type": "triggering",
+                "title": "A title",
+                "description": "A description",
+                "event_name": "An event",
+                "events": [
+                    "00000000-0000-0000-0000-000000000000"
+                ],
+                "event_type": "CloudTrail",
+                "start_time": "2023-03-09T12:41:33.000000",
+                "end_time": "2023-03-09T12:41:33.000000",
+                "time_indicator_text": None,
+                "timeline_item_type": "event_group",
+                "events_metadata": {
+                    "00000000-0000-0000-0000-000000000000": {
+                        "source_entity": {
+                            "id": "Example IAM",
+                            "metadata": {},
+                            "type": "iam_user",
+                            "name": None
+                        },
+                        "target_entities": [
+                            {
+                                "id": "Example RDS",
+                                "type": "rds_cluster",
+                                "metadata": {},
+                                "name": None
+                            }
+                        ]
+                    }
+                },
+                "metadata": {},
+                "error_code": None
+            }
+        ],
+        "state": "extended",
+        "resolve_params": {
+            "timeframe_lookup_window_hours": 24,
+            "include_data_events": True
+        }
+    }
+}
+
+
+@patch('Gem.GemClient._generate_token', return_value=mock_auth_token)
+@patch('Gem.GemClient.http_request', return_value=test_get_alert_details_data)
+def test_get_alert_details(http_request, _generate_token):
+    from Gem import get_alert_details, init_client
+    client = init_client(params)
+    args = {
+        "alert_id": "00000000-0000-0000-0000-000000000000"
+    }
+    res = get_alert_details(client, args)
+    assert res.outputs == test_get_alert_details_data
+
+
 test_get_resource_details_data = {
     "resource_id": "11111111-1111-1111-1111-111111111111",
     "account": {

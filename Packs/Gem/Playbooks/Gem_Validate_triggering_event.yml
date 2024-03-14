@@ -1,0 +1,349 @@
+description: |-
+  Get the triggering events of a Gem Alert and send a validation Slack message to the dev team.
+  The response will be added to the Gem Timeline.
+id: "Gem Validate triggering events"
+inputs: []
+name: Gem Validate triggering events
+outputs: []
+quiet: true
+starttaskid: "0"
+fromversion: 6.8.0
+tasks:
+  "0":
+    continueonerrortype: ""
+    id: "0"
+    ignoreworker: false
+    isautoswitchedtoquietmode: false
+    isoversize: false
+    nexttasks:
+      "#none#":
+        - "2"
+    note: false
+    quietmode: 0
+    separatecontext: false
+    skipunavailable: false
+    task:
+      brand: ""
+      id: cde9852c-cbdf-4280-8943-a77b98985c8c
+      iscommand: false
+      name: ""
+      version: -1
+      description: ""
+    taskid: cde9852c-cbdf-4280-8943-a77b98985c8c
+    timertriggers: []
+    type: start
+    view: |-
+      {
+        "position": {
+          "x": 450,
+          "y": 50
+        }
+      }
+  "1":
+    continueonerrortype: ""
+    id: "1"
+    ignoreworker: false
+    isautoswitchedtoquietmode: false
+    isoversize: false
+    message:
+      bcc:
+      body:
+        simple: "Hi,  \nWe've detected some suspicious activity related to your user: ${Gem.Alert.alert_context.title}\n\nWe wanted to verify you're familiar with the following actions (Showing only first 3) :\n•  ${zipped_list.[0]}\n•  ${zipped_list.[1]}\n•  ${zipped_list.[2]}\n"
+      cc:
+      format: ""
+      methods:
+        - SlackV3
+      replyOptions:
+        - Yes, it's me
+        - No, I didn't do any of these
+      subject:
+      timings:
+        completeafterreplies: 1
+        completeaftersla: false
+        completeafterv2: true
+        retriescount: 2
+        retriesinterval: 360
+      to:
+        simple: Administrator
+    nexttasks:
+      No, I didn't do any of these:
+        - "9"
+      Yes, it's me:
+        - "8"
+    note: false
+    quietmode: 1
+    separatecontext: false
+    skipunavailable: false
+    task:
+      brand: ""
+      description: Send a Slack validation message.
+      id: 7cb4f004-f9a7-4c0c-89a5-7294f046dc35
+      iscommand: false
+      name: |
+        Validate
+      type: condition
+      version: -1
+    taskid: 7cb4f004-f9a7-4c0c-89a5-7294f046dc35
+    timertriggers: []
+    type: condition
+    view: |-
+      {
+        "position": {
+          "x": 450,
+          "y": 775
+        }
+      }
+  "2":
+    continueonerrortype: ""
+    id: "2"
+    ignoreworker: false
+    isautoswitchedtoquietmode: false
+    isoversize: false
+    nexttasks:
+      "#none#":
+        - "6"
+        - "5"
+    note: false
+    quietmode: 1
+    scriptarguments:
+      alert_id:
+        simple: ${incident.gemalertid}
+    separatecontext: false
+    skipunavailable: false
+    task:
+      brand: Gem
+      description: Get details about a specific alert
+      id: 3b67c20b-90e3-4d62-82f2-78a93ed115e6
+      iscommand: true
+      name: Get alert details
+      script: Gem|||gem-get-alert-details
+      type: regular
+      version: -1
+    taskid: 3b67c20b-90e3-4d62-82f2-78a93ed115e6
+    timertriggers: []
+    type: regular
+    view: |-
+      {
+        "position": {
+          "x": 450,
+          "y": 200
+        }
+      }
+  "5":
+    continueonerrortype: ""
+    id: "5"
+    ignoreworker: false
+    isautoswitchedtoquietmode: false
+    isoversize: false
+    nexttasks:
+      "#none#":
+        - "7"
+    note: false
+    quietmode: 1
+    scriptarguments:
+      key:
+        simple: Triggering_events.start_time
+      value:
+        complex:
+          accessor: start_time
+          filters:
+            - - left:
+                  iscontext: true
+                  value:
+                    simple: Gem.Alert.triage_configuration.event_groups.type
+                operator: isEqualString
+                right:
+                  value:
+                    simple: triggering
+          root: Gem.Alert.triage_configuration.event_groups
+    separatecontext: false
+    skipunavailable: false
+    task:
+      brand: ""
+      description: Set a value in context under the key you entered.
+      id: 0ef039b7-3e5c-4e07-8094-55a6eff528d7
+      iscommand: false
+      name: Filter triggering events start_time
+      script: Set
+      type: regular
+      version: -1
+    taskid: 0ef039b7-3e5c-4e07-8094-55a6eff528d7
+    timertriggers: []
+    type: regular
+    view: |-
+      {
+        "position": {
+          "x": 760,
+          "y": 450
+        }
+      }
+  "6":
+    continueonerrortype: ""
+    id: "6"
+    ignoreworker: false
+    isautoswitchedtoquietmode: false
+    isoversize: false
+    nexttasks:
+      "#none#":
+        - "7"
+    note: false
+    quietmode: 0
+    scriptarguments:
+      key:
+        simple: Triggering_events.descriptions
+      value:
+        complex:
+          accessor: description
+          filters:
+            - - left:
+                  iscontext: true
+                  value:
+                    simple: Gem.Alert.triage_configuration.event_groups.type
+                operator: isEqualString
+                right:
+                  value:
+                    simple: triggering
+          root: Gem.Alert.triage_configuration.event_groups
+    separatecontext: false
+    skipunavailable: false
+    task:
+      brand: ""
+      description: Set a value in context under the key you entered.
+      id: 27442459-b46d-433e-8d56-4d9588713261
+      iscommand: false
+      name: Filter triggering events description
+      script: Set
+      type: regular
+      version: -1
+    taskid: 27442459-b46d-433e-8d56-4d9588713261
+    timertriggers: []
+    type: regular
+    view: |-
+      {
+        "position": {
+          "x": 140,
+          "y": 450
+        }
+      }
+  "7":
+    continueonerrortype: ""
+    id: "7"
+    ignoreworker: false
+    isautoswitchedtoquietmode: false
+    isoversize: false
+    nexttasks:
+      "#none#":
+        - "1"
+    note: false
+    quietmode: 0
+    scriptarguments:
+      format:
+        simple: "{1} --  Preformed at {2}"
+      list1:
+        simple: ${Triggering_events.descriptions}
+      list2:
+        simple: ${Triggering_events.start_time}
+    separatecontext: false
+    skipunavailable: false
+    task:
+      brand: ""
+      description: Joins values from two lists by index according to a given format.
+      id: 667f260f-22c1-4cd2-81c0-814c951ff413
+      iscommand: false
+      name: ZipStrings
+      script: ZipStrings
+      type: regular
+      version: -1
+    taskid: 667f260f-22c1-4cd2-81c0-814c951ff413
+    timertriggers: []
+    type: regular
+    view: |-
+      {
+        "position": {
+          "x": 450,
+          "y": 630
+        }
+      }
+  "8":
+    continueonerrortype: ""
+    id: "8"
+    ignoreworker: false
+    isautoswitchedtoquietmode: false
+    isoversize: false
+    note: false
+    quietmode: 0
+    scriptarguments:
+      comment:
+        simple: "User Response: ${Ask.Answers.0}"
+      threat_id:
+        simple: ${incident.gemthreatid}
+    separatecontext: false
+    skipunavailable: false
+    task:
+      brand: Gem
+      description: Add a timeline event to a threat.
+      id: 4514fb07-026f-413c-8710-ba88e3b14695
+      iscommand: true
+      name: gem-add-timeline-event
+      script: Gem|||gem-add-timeline-event
+      type: regular
+      version: -1
+    taskid: 4514fb07-026f-413c-8710-ba88e3b14695
+    timertriggers: []
+    type: regular
+    view: |-
+      {
+        "position": {
+          "x": 90,
+          "y": 1030
+        }
+      }
+  "9":
+    continueonerrortype: ""
+    id: "9"
+    ignoreworker: false
+    isautoswitchedtoquietmode: false
+    isoversize: false
+    note: false
+    quietmode: 0
+    scriptarguments:
+      comment:
+        simple: "User Response: ${Ask.Answers.0}"
+      threat_id:
+        simple: ${incident.gemthreatid}
+    separatecontext: false
+    skipunavailable: false
+    task:
+      brand: Gem
+      description: Add a timeline event to a threat.
+      id: 4c3e70a7-57c7-487d-8f3b-e33d1ec96887
+      iscommand: true
+      name: gem-add-timeline-event
+      script: Gem|||gem-add-timeline-event
+      type: regular
+      version: -1
+    taskid: 4c3e70a7-57c7-487d-8f3b-e33d1ec96887
+    timertriggers: []
+    type: regular
+    view: |-
+      {
+        "position": {
+          "x": 710,
+          "y": 1030
+        }
+      }
+version: -1
+view: |-
+  {
+    "linkLabelsPosition": {},
+    "paper": {
+      "dimensions": {
+        "height": 1075,
+        "width": 1050,
+        "x": 90,
+        "y": 50
+      }
+    }
+  }
+tests:
+  - No tests (auto formatted)

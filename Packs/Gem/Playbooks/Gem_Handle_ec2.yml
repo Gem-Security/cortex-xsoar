@@ -64,7 +64,7 @@ tasks:
         retriescount: 2
         retriesinterval: 360
       to:
-        simple: Administrator,lior@gem.security
+        simple: Administrator
     nexttasks:
       Ignore:
         - "8"

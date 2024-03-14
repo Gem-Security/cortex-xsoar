@@ -475,6 +475,130 @@ script:
         - name: alert_id
           description: The ID of the alert to get details for.
           required: true
+      outputs:
+        - contextPath: Gem.Alert.alert_context.account_db_id
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.alert_context.alert_id
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.alert_context.alert_source
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.alert_context.alert_source_id
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.alert_context.alert_source_url
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.alert_context.cloud_provider
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.alert_context.created_at
+          description: ""
+          type: Date
+        - contextPath: Gem.Alert.alert_context.description
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.alert_context.description_template
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.alert_context.general_cloud_provider
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.alert_context.mitre_techniques.id
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.alert_context.mitre_techniques.technique_name
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.alert_context.resolved
+          description: ""
+          type: Boolean
+        - contextPath: Gem.Alert.alert_context.severity
+          description: ""
+          type: Number
+        - contextPath: Gem.Alert.alert_context.status
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.alert_context.timeframe_end
+          description: ""
+          type: Date
+        - contextPath: Gem.Alert.alert_context.timeframe_start
+          description: ""
+          type: Date
+        - contextPath: Gem.Alert.alert_context.title
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.alert_context.ttp_id
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.analysis
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.entities.activity_by_provider
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.entities.cloud_provider
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.entities.id
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.entities.is_main_entity
+          description: ""
+          type: Boolean
+        - contextPath: Gem.Alert.triage_configuration.entities.is_secondary_entity
+          description: ""
+          type: Boolean
+        - contextPath: Gem.Alert.triage_configuration.entities.resource_id
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.entities.type
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.event_groups.description
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.event_groups.end_time
+          description: ""
+          type: Date
+        - contextPath: Gem.Alert.triage_configuration.event_groups.error_code
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.event_groups.event_name
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.event_groups.event_type
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.event_groups.events
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.event_groups.start_time
+          description: ""
+          type: Date
+        - contextPath: Gem.Alert.triage_configuration.event_groups.time_indicator_text
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.event_groups.timeline_item_type
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.event_groups.title
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.event_groups.type
+          description: ""
+          type: String
+        - contextPath: Gem.Alert.triage_configuration.resolve_params.include_data_events
+          description: ""
+          type: Boolean
+        - contextPath: Gem.Alert.triage_configuration.resolve_params.timeframe_lookup_window_hours
+          description: ""
+          type: Number
+        - contextPath: Gem.Alert.triage_configuration.state
+          description: ""
+          type: String
 
     - name: gem-list-inventory-resources
       description: List inventory resources in Gem
@@ -509,7 +633,7 @@ script:
           type: String
         - contextPath: Gem.InventoryItems.account.hierarchy_path
           description: ""
-          type: Unknown
+          type: String
         - contextPath: Gem.InventoryItems.account.id
           description: ""
           type: Number

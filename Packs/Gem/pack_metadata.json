@@ -59,6 +59,10 @@
         "GenericWebhook": {
             "mandatory": false,
             "name": "Generic Webhook"
+        },
+        "CommonScripts": {
+            "mandatory": false,
+            "name": "Common Scripts"
         }
     },
     "marketplaces": [

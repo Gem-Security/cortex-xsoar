@@ -1,3 +1,4 @@
+import re
 import demistomock as demisto  # noqa: F401
 from CommonServerPython import *  # noqa: F401
 from CommonServerUserPython import *  # noqa
@@ -142,6 +143,20 @@ class GemClient(BaseClient):
         response = self.http_request(
             method='GET',
             url_suffix=THREAT_ENDPOINT.format(id=threat_id)
+        )
+
+        return response
+
+    def get_alert_details(self, alert_id: str):
+        """ Get alert details
+        :param alert_id: id of the alert to get
+        :return: alert details
+        """
+        params = {"alert_id": alert_id}
+        response = self.http_request(
+            method='GET',
+            url_suffix=ALERTS_ENDPOINT,
+            params={k: v for k, v in params.items() if v is not None}
         )
 
         return response
@@ -332,6 +347,23 @@ class GemClient(BaseClient):
 
 
 ''' HELPER FUNCTIONS '''
+# as per recommendation from @freylis, compile once only
+CLEANR = re.compile('<.*?>')
+
+
+def _cleanhtml(raw_html):
+    cleantext = re.sub(CLEANR, '', raw_html)
+    return cleantext.replace("\n", "")
+
+
+def _clean_description(alert: dict) -> dict:
+    if alert['triage_configuration']['event_groups']:
+        i = 0
+        for e in alert['triage_configuration']['event_groups']:
+            clean_description = _cleanhtml(e['description'])
+            alert['triage_configuration']['event_groups'][i]['description'] = clean_description
+            i += 1
+    return alert
 
 
 def init_client(params: dict) -> GemClient:
@@ -426,6 +458,22 @@ def get_threat_details(client: GemClient, args: dict[str, Any]) -> CommandResult
     return CommandResults(
         readable_output=tableToMarkdown('Threat', result),
         outputs_prefix='Gem.Threat',
+        outputs_key_field='id',
+        outputs=result
+    )
+
+
+def get_alert_details(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    alert_id = args.get('alert_id')
+
+    if not alert_id:
+        raise DemistoException('Alert ID is a required parameter.')
+    result = client.get_alert_details(alert_id=alert_id)
+    result = _clean_description(result)
+
+    return CommandResults(
+        readable_output=tableToMarkdown('Alert', result),
+        outputs_prefix='Gem.Alert',
         outputs_key_field='id',
         outputs=result
     )
@@ -712,6 +760,8 @@ def main() -> None:
             return_results(list_threats(client, args))
         elif command == 'gem-get-threat-details':
             return_results(get_threat_details(client, args))
+        elif command == 'gem-get-alert-details':
+            return_results(get_alert_details(client, args))
         elif command == 'gem-list-inventory-resources':
             return_results(list_inventory_resources(client, args))
         elif command == 'gem-get-resource-details':
