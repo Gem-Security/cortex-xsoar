@@ -821,6 +821,7 @@ script:
         - contextPath: Gem.Entity.By.Services.SERVICE
           description: ""
           type: String
+
     - name: gem-list-events-by-entity
       description: List all events performed by an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
@@ -848,6 +849,7 @@ script:
         - contextPath: Gem.Entity.By.Events.EVENTNAME_COUNT
           description: ""
           type: String
+
     - name: gem-list-accessing-entities
       description: List all entities that accessed an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
@@ -1046,6 +1048,7 @@ script:
         - name: comment
           description: The comment to add to the timeline event.
           required: true
+
   isfetch: true
   runonce: false
   script: "-"

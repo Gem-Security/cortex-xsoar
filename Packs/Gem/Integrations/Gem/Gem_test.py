@@ -585,3 +585,19 @@ def test_list_accessing_ips(http_request, _generate_token):
     }
     res = list_accessing_ips(client, args)
     assert res.outputs[0] == test_list_accessing_ips_data['table']['rows'][0]['row']
+
+
+test_update_threat_status_data = None
+
+
+@patch('Gem.GemClient._generate_token', return_value=mock_auth_token)
+@patch('Gem.GemClient.http_request', return_value=test_update_threat_status_data)
+def test_update_threat_status(http_request, _generate_token):
+    from Gem import update_threat_status, init_client
+    client = init_client(params)
+    args = {
+        "threat_id": "11111111-1111-1111-1111-111111111111",
+        "status": "open"
+    }
+    res = update_threat_status(client, args)
+    assert res is None

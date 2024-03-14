@@ -41,6 +41,9 @@ ADD_TIMELINE_EVENT_ENDPOINT = '/detection/threats/{id}/add_timeline_event'
 
 
 class GemClient(BaseClient):
+    """This class defines a client to interact with the Gem API
+    """
+
     def __init__(self, base_url: str, verify: bool, proxy: bool, client_id: str, client_secret: str):
         super().__init__(base_url=base_url, verify=verify, proxy=proxy, ok_codes=OK_CODES)
         self._client_id = client_id
@@ -51,6 +54,15 @@ class GemClient(BaseClient):
             raise DemistoException(f'Failed to get token. Error: {str(e)}')
 
     def _get_token(self):
+        """
+        Retrieves the authentication token for the Gem integration.
+
+        If the token is not found in the integration context or if it is expired,
+        a new token is generated and returned.
+
+        Returns:
+            str: The authentication token.
+        """
         ctx = get_integration_context()
 
         if not ctx or not ctx.get('auth_token'):
@@ -69,6 +81,26 @@ class GemClient(BaseClient):
         return auth_token
 
     def http_request(self, method: str, url_suffix='', full_url=None, headers=None, json_data=None, params=None, auth=True):
+        """
+        Sends an HTTP request to the specified URL, adding the required headers and authentication token.
+
+        Args:
+            method (str): The HTTP method to use (e.g., GET, POST, PUT, DELETE).
+            url_suffix (str, optional): The URL suffix to append to the base URL. Defaults to ''.
+            full_url (str, optional): The full URL to send the request to. If provided, `url_suffix` will be ignored.
+            Defaults to None.
+            headers (dict, optional): Additional headers to include in the request. Defaults to None.
+            json_data (dict, optional): JSON data to include in the request body. Defaults to None.
+            params (dict, optional): Query parameters to include in the request URL. Defaults to None.
+            auth (bool, optional): Whether to include authentication headers. Defaults to True.
+
+        Returns:
+            dict: The response from the HTTP request.
+
+        Raises:
+            Exception: If the request fails.
+
+        """
         if auth:
             headers = headers or {}
             headers['Authorization'] = f'Bearer {self._auth_token}'
@@ -117,6 +149,16 @@ class GemClient(BaseClient):
         return token_res.get('access_token')
 
     def fetch_threats(self, maxincidents=None, start_time=None) -> list[dict]:
+        """
+        Fetches a list of threats from the Gem API.
+
+        Args:
+            maxincidents (int, optional): The maximum number of incidents to fetch. Defaults to None.
+            start_time (str, optional): The start time to fetch incidents from. Defaults to None.
+
+        Returns:
+            list[dict]: A list of threat incidents.
+        """
         params = {'limit': maxincidents, 'created__gt': start_time, 'ordering': 'created'}
         return self.http_request(
             method='GET',
@@ -126,9 +168,11 @@ class GemClient(BaseClient):
         )
 
     def get_resource_details(self, resource_id: str) -> dict:
-        """ Get inventory item details
-        :param resource_id: id of the item to get
-        :return: inventory item
+        """
+        Get inventory item details.
+
+        :param resource_id: ID of the item to get.
+        :return: Inventory item.
         """
         return self.http_request(
             method='GET',
@@ -136,7 +180,9 @@ class GemClient(BaseClient):
         )
 
     def get_threat_details(self, threat_id: str):
-        """ Get threat details
+        """
+        Get threat details
+
         :param threat_id: id of the threat to get
         :return: threat details
         """
@@ -148,7 +194,9 @@ class GemClient(BaseClient):
         return response
 
     def get_alert_details(self, alert_id: str):
-        """ Get alert details
+        """
+        Get alert details
+
         :param alert_id: id of the alert to get
         :return: alert details
         """
@@ -163,7 +211,8 @@ class GemClient(BaseClient):
 
     def list_threats(self, limit, time_start=None, time_end=None, ordering=None, status=None, ttp_id=None,
                      title=None, severity=None, entity_type=None, cloud_provider=None) -> list[dict]:
-        """ List threats
+        """
+        List threats
         :param time_start: time of first threat
         :param time_end: time of last threat
         :param limit: amount of threats
@@ -281,38 +330,142 @@ class GemClient(BaseClient):
 
     def list_ips_by_entity(self, entity_id=None, entity_type=None, read_only=None, start_time=None,
                            end_time=None) -> dict:
+        """
+        Retrieves a dictionary of IP addresses associated with the specified entity.
+
+        Args:
+            entity_id (str): The ID of the entity.
+            entity_type (str): The type of the entity.
+            read_only (bool): Whether to retrieve read-only IP addresses.
+            start_time (str): The start time for filtering IP addresses.
+            end_time (str): The end time for filtering IP addresses.
+
+        Returns:
+            dict: A dictionary of IP addresses associated with the entity.
+        """
         return self._breakdown(breakdown_by='source_ip', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
                                start_time=start_time, end_time=end_time)
 
     def list_services_by_entity(self, entity_id=None, entity_type=None, read_only=None, start_time=None,
                                 end_time=None) -> dict:
+        """
+        Retrieves a list of services associated with a specific entity.
+
+        Args:
+            entity_id (str): The ID of the entity.
+            entity_type (str): The type of the entity.
+            read_only (bool): Whether to retrieve read-only services only.
+            start_time (str): The start time for filtering services.
+            end_time (str): The end time for filtering services.
+
+        Returns:
+            dict: A dictionary containing the list of services associated with the entity.
+        """
         return self._breakdown(breakdown_by='service', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
                                start_time=start_time, end_time=end_time)
 
     def list_events_by_entity(self, entity_id=None, entity_type=None, read_only=None, start_time=None,
                               end_time=None) -> dict:
+        """
+        Retrieves a list of events associated with a specific entity.
+
+        Args:
+            entity_id (str): The ID of the entity.
+            entity_type (str): The type of the entity.
+            read_only (bool): Whether to retrieve read-only events only.
+            start_time (str): The start time of the events.
+            end_time (str): The end time of the events.
+
+        Returns:
+            dict: A dictionary containing the list of events.
+        """
         return self._breakdown(breakdown_by='entity_event_out', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
                                start_time=start_time, end_time=end_time)
 
     def list_accessing_entities(self, entity_id=None, entity_type=None, read_only=None, start_time=None,
                                 end_time=None) -> dict:
+        """
+        Retrieves a list of accessing entities based on the provided parameters.
+
+        Args:
+            entity_id (str): The ID of the entity.
+            entity_type (str): The type of the entity.
+            read_only (bool): Specifies if the entity is read-only.
+            start_time (datetime): The start time for filtering the accessing entities.
+            end_time (datetime): The end time for filtering the accessing entities.
+
+        Returns:
+            dict: A dictionary containing the list of accessing entities.
+        """
         return self._breakdown(breakdown_by='user_in', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
                                start_time=start_time, end_time=end_time)
 
     def list_using_entities(self, entity_id=None, entity_type=None, read_only=None, start_time=None,
                             end_time=None) -> dict:
+        """
+        Retrieves a list of entities using the specified parameters.
+
+        Args:
+            entity_id (str, optional): The ID of the entity. Defaults to None.
+            entity_type (str, optional): The type of the entity. Defaults to None.
+            read_only (bool, optional): Specifies if the entity is read-only. Defaults to None.
+            start_time (str, optional): The start time for filtering entities. Defaults to None.
+            end_time (str, optional): The end time for filtering entities. Defaults to None.
+
+        Returns:
+            dict: A dictionary containing the list of entities.
+
+        """
         return self._breakdown(breakdown_by='using_entities', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
                                start_time=start_time, end_time=end_time)
 
     def list_events_on_entity(self, entity_id=None, entity_type=None, start_time=None, end_time=None, read_only=None) -> dict:
+        """
+        Retrieves a list of events associated with a specific entity.
+
+        Args:
+            entity_id (str): The ID of the entity.
+            entity_type (str): The type of the entity.
+            start_time (str): The start time of the events.
+            end_time (str): The end time of the events.
+            read_only (bool): Whether to retrieve read-only events only.
+
+        Returns:
+            dict: A dictionary containing the list of events.
+        """
         return self._breakdown(breakdown_by='entity_event_in', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
                                start_time=start_time, end_time=end_time)
 
     def list_accessing_ips(self, entity_id=None, entity_type=None, start_time=None, end_time=None, read_only=None) -> dict:
+        """
+        Retrieves a breakdown of accessing IPs for a given entity.
+
+        Args:
+            entity_id (str): The ID of the entity.
+            entity_type (str): The type of the entity.
+            start_time (str): The start time of the breakdown.
+            end_time (str): The end time of the breakdown.
+            read_only (bool): Whether to include read-only access in the breakdown.
+
+        Returns:
+            dict: A breakdown of accessing IPs.
+        """
         return self._breakdown(breakdown_by='ip_access', entity_id=entity_id, entity_type=entity_type, read_only=read_only,
                                start_time=start_time, end_time=end_time)
 
     def update_threat_status(self, threat_id: str, status: Optional[str], verdict: Optional[str], reason: Optional[str] = None):
+        """
+        Update the threat status for a given threat ID.
+
+        Args:
+            threat_id (str): The ID of the threat to update.
+            status (str): The new status of the threat.
+            verdict (str): The new verdict of the threat.
+            reason (str, optional): Additional information or reason for the update.
+
+        Returns:
+            dict: The response from the API call.
+        """
         json_data = {'verdict': verdict, 'additional_info': reason, 'status': status}
         response = self.http_request(
             method='PATCH',
@@ -324,6 +477,20 @@ class GemClient(BaseClient):
 
     def run_action_on_entity(self, action: str, entity_id: str, entity_type: str, alert_id: str,
                              resource_id: str) -> dict:
+        """
+        Runs an action on a specific entity.
+
+        Args:
+            action (str): The action to be performed on the entity.
+            entity_id (str): The ID of the entity.
+            entity_type (str): The type of the entity.
+            alert_id (str): The ID of the alert associated with the entity.
+            resource_id (str): The ID of the resource associated with the entity.
+
+        Returns:
+            dict: The response from the API.
+
+        """
         params = {'action': action, 'entity_id': entity_id, 'entity_type': entity_type,
                   'alert_id': alert_id, 'resource_id': resource_id}
 
@@ -336,6 +503,17 @@ class GemClient(BaseClient):
         return response
 
     def add_timeline_event(self, threatid: str, comment: str, timestamp: str) -> dict:
+        """
+        Adds a timeline event to a threat.
+
+        Args:
+            threatid (str): The ID of the threat.
+            comment (str): The comment for the timeline event.
+            timestamp (str): The timestamp of the timeline event.
+
+        Returns:
+            dict: The response from the API.
+        """
         params = {'title': "XSOAR comment", "description": comment, "timeline_event_type": "xsoar", "timestamp": timestamp}
         response = self.http_request(
             method='POST',
@@ -352,11 +530,29 @@ CLEANR = re.compile('<.*?>')
 
 
 def _cleanhtml(raw_html):
+    """
+    Cleans HTML tags from the given raw HTML string.
+
+    Args:
+        raw_html (str): The raw HTML string to be cleaned.
+
+    Returns:
+        str: The cleaned text without HTML tags.
+    """
     cleantext = re.sub(CLEANR, '', raw_html)
     return cleantext.replace("\n", "")
 
 
 def _clean_description(alert: dict) -> dict:
+    """
+    Cleans the description of the alert by removing HTML tags.
+
+    Args:
+        alert (dict): The alert dictionary.
+
+    Returns:
+        dict: The modified alert dictionary with cleaned description.
+    """
     if alert['triage_configuration']['event_groups']:
         i = 0
         for e in alert['triage_configuration']['event_groups']:
@@ -368,7 +564,7 @@ def _clean_description(alert: dict) -> dict:
 
 def init_client(params: dict) -> GemClient:
     """
-    Initializes a new Client object
+    Initializes a new GemClient object
     """
     return GemClient(
         base_url=params['api_endpoint'],
@@ -383,6 +579,18 @@ def init_client(params: dict) -> GemClient:
 
 
 def fetch_threats(client: GemClient, max_results: int, last_run: dict, first_fetch_time: str) -> tuple[dict, list[dict]]:
+    """
+    Fetches threats from the Gem platform within a specified time range.
+
+    Args:
+        client (GemClient): The Gem client object.
+        max_results (int): Maximum number of results to fetch.
+        last_run (dict): A dictionary containing information about the last run of the fetch.
+        first_fetch_time (str): The earliest time from which to fetch threats, if there is no last run.
+
+    Returns:
+        tuple[dict, list[dict]]: A tuple containing the new last run and a list of incidents (threats).
+    """
     last_fetch = last_run.get('last_fetch', None)
     if last_fetch is None:
         # if missing, use what provided via first_fetch_time
@@ -434,6 +642,19 @@ def test_module(params: dict[str, Any]) -> str:
 
 
 def get_resource_details(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    """
+    Retrieves details of a specific resource from the Gem API.
+
+    Args:
+        client (GemClient): The Gem client object.
+        args (dict): Command arguments, must contain 'resource_id'.
+
+    Returns:
+        CommandResults: Object containing the resource details for display in Cortex XSOAR.
+
+    Raises:
+        DemistoException: If 'resource_id' is not provided in the arguments.
+    """
     resource_id = args.get('resource_id')
     if not resource_id:
         raise DemistoException('Resource ID is a required parameter.')
@@ -449,6 +670,19 @@ def get_resource_details(client: GemClient, args: dict[str, Any]) -> CommandResu
 
 
 def get_threat_details(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    """
+    Retrieves details of a specific threat from the Gem API.
+
+    Args:
+        client (GemClient): The Gem client object.
+        args (dict): Command arguments, must contain 'threat_id'.
+
+    Returns:
+        CommandResults: Object containing the threat details for display in Cortex XSOAR.
+
+    Raises:
+        DemistoException: If 'threat_id' is not provided in the arguments.
+    """
     threat_id = args.get('threat_id')
 
     if not threat_id:
@@ -464,6 +698,19 @@ def get_threat_details(client: GemClient, args: dict[str, Any]) -> CommandResult
 
 
 def get_alert_details(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    """
+    Retrieves details of a specific alert from the Gem API.
+
+    Args:
+        client (GemClient): The Gem client object.
+        args (dict): Command arguments, must contain 'alert_id'.
+
+    Returns:
+        CommandResults: Object containing the alert details for display in Cortex XSOAR.
+
+    Raises:
+        DemistoException: If 'alert_id' is not provided in the arguments.
+    """
     alert_id = args.get('alert_id')
 
     if not alert_id:
@@ -480,6 +727,17 @@ def get_alert_details(client: GemClient, args: dict[str, Any]) -> CommandResults
 
 
 def list_inventory_resources(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    """
+    Lists inventory resources from the Gem API based on provided arguments.
+
+    Args:
+        client (GemClient): The Gem client object.
+        args (dict): Command arguments, may include 'limit', 'include_deleted', 'region',
+                     'resource_type', and 'search'.
+
+    Returns:
+        CommandResults: Object containing the list of inventory resources for display in Cortex XSOAR.
+    """
     limit = arg_to_number(args.get("limit")) or PAGE_SIZE
     include_deleted = args.get('include_deleted')
     region = args.get('region')
@@ -498,6 +756,21 @@ def list_inventory_resources(client: GemClient, args: dict[str, Any]) -> Command
 
 
 def list_threats(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    """
+    Lists threats from the Gem API based on provided time range and other optional filters.
+
+    Args:
+        client (GemClient): The Gem client object.
+        args (dict): Command arguments, must include 'time_start' and 'time_end', and may include
+                     'limit', 'ordering', 'status', 'ttp_id', 'title', 'severity', 'entity_type',
+                     and 'cloud_provider'.
+
+    Returns:
+        CommandResults: Object containing the list of threats for display in Cortex XSOAR.
+
+    Raises:
+        DemistoException: If 'time_start' or 'time_end' is not provided in the arguments.
+    """
     time_start = args.get('time_start')
     time_end = args.get('time_end')
     limit = arg_to_number(args.get("limit")) or PAGE_SIZE
@@ -529,6 +802,20 @@ def list_threats(client: GemClient, args: dict[str, Any]) -> CommandResults:
 
 
 def _breakdown_validate_params(client: GemClient, args: dict[str, Any]) -> tuple[Any, Any, Any | None, Any, Any]:
+    """
+    Validates and extracts parameters required for breakdown-related API requests.
+
+    Args:
+        client (GemClient): The Gem client object (unused in this function but included for consistency).
+        args (dict): Command arguments, must include 'entity_id', 'entity_type', 'start_time', and 'end_time'.
+
+    Returns:
+        tuple: A tuple containing extracted parameters.
+
+    Raises:
+        DemistoException: If any of the required parameters ('entity_id', 'entity_type', 'start_time', 'end_time')
+                          is not provided in the arguments.
+    """
     entity_id = args.get('entity_id')
     entity_type = args.get('entity_type')
     read_only = args.get('read_only')
@@ -551,6 +838,15 @@ def _breakdown_validate_params(client: GemClient, args: dict[str, Any]) -> tuple
 
 
 def _parse_breakdown_result(result: dict) -> tuple[list[str], list[list[str]], list[dict]]:
+    """
+    Parses the result from a breakdown API response.
+
+    Args:
+        result (dict): The API response containing the breakdown results.
+
+    Returns:
+        tuple: A tuple containing parsed headers, rows for table display, and raw output data.
+    """
     new_t = []
 
     for r in result['rows']:
@@ -560,6 +856,16 @@ def _parse_breakdown_result(result: dict) -> tuple[list[str], list[list[str]], l
 
 
 def list_ips_by_entity(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    """
+    Lists IP addresses associated with a specific entity.
+
+    Args:
+        client (GemClient): The Gem client object.
+        args (dict): Command arguments, including 'entity_id', 'entity_type', 'read_only', 'start_time', and 'end_time'.
+
+    Returns:
+        CommandResults: Object containing a list of IP addresses for display in Cortex XSOAR.
+    """
 
     entity_id, entity_type, read_only, start_time, end_time = _breakdown_validate_params(client, args)
 
@@ -576,7 +882,16 @@ def list_ips_by_entity(client: GemClient, args: dict[str, Any]) -> CommandResult
 
 
 def list_services_by_entity(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    """
+    Lists services associated with a specific entity.
 
+    Args:
+        client (GemClient): The Gem client object.
+        args (dict): Command arguments, including 'entity_id', 'entity_type', 'read_only', 'start_time', and 'end_time'.
+
+    Returns:
+        CommandResults: Object containing a list of services for display in Cortex XSOAR.
+    """
     entity_id, entity_type, read_only, start_time, end_time = _breakdown_validate_params(client, args)
 
     result = client.list_services_by_entity(entity_id=entity_id, entity_type=entity_type, read_only=read_only,
@@ -592,7 +907,16 @@ def list_services_by_entity(client: GemClient, args: dict[str, Any]) -> CommandR
 
 
 def list_events_by_entity(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    """
+    Lists events associated with a specific entity.
 
+    Args:
+        client (GemClient): The Gem client object.
+        args (dict): Command arguments, including 'entity_id', 'entity_type', 'read_only', 'start_time', and 'end_time'.
+
+    Returns:
+        CommandResults: Object containing a list of events for display in Cortex XSOAR.
+    """
     entity_id, entity_type, read_only, start_time, end_time = _breakdown_validate_params(client, args)
 
     result = client.list_events_by_entity(entity_id=entity_id, entity_type=entity_type, read_only=read_only,
@@ -608,6 +932,16 @@ def list_events_by_entity(client: GemClient, args: dict[str, Any]) -> CommandRes
 
 
 def list_accessing_entities(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    """
+    Lists entities that have accessed a specific entity.
+
+    Args:
+        client (GemClient): The Gem client object.
+        args (dict): Command arguments, including 'entity_id', 'entity_type', 'read_only', 'start_time', and 'end_time'.
+
+    Returns:
+        CommandResults: Object containing a list of accessing entities for display in Cortex XSOAR.
+    """
 
     entity_id, entity_type, read_only, start_time, end_time = _breakdown_validate_params(client, args)
 
@@ -624,6 +958,16 @@ def list_accessing_entities(client: GemClient, args: dict[str, Any]) -> CommandR
 
 
 def list_using_entities(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    """
+    Lists entities using a specific entity.
+
+    Args:
+        client (GemClient): The Gem client object.
+        args (dict): Command arguments, including 'entity_id', 'entity_type', 'read_only', 'start_time', and 'end_time'.
+
+    Returns:
+        CommandResults: Object containing a list of using entities for display in Cortex XSOAR.
+    """
 
     entity_id, entity_type, read_only, start_time, end_time = _breakdown_validate_params(client, args)
 
@@ -640,6 +984,16 @@ def list_using_entities(client: GemClient, args: dict[str, Any]) -> CommandResul
 
 
 def list_events_on_entity(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    """
+    Lists events occurring on a specific entity.
+
+    Args:
+        client (GemClient): The Gem client object.
+        args (dict): Command arguments, including 'entity_id', 'entity_type', 'read_only', 'start_time', and 'end_time'.
+
+    Returns:
+        CommandResults: Object containing a list of events on the entity for display in Cortex XSOAR.
+    """
 
     entity_id, entity_type, read_only, start_time, end_time = _breakdown_validate_params(client, args)
 
@@ -656,6 +1010,16 @@ def list_events_on_entity(client: GemClient, args: dict[str, Any]) -> CommandRes
 
 
 def list_accessing_ips(client: GemClient, args: dict[str, Any]) -> CommandResults:
+    """
+    Lists IP addresses that have accessed a specific entity.
+
+    Args:
+        client (GemClient): The Gem client object.
+        args (dict): Command arguments, including 'entity_id', 'entity_type', 'read_only', 'start_time', and 'end_time'.
+
+    Returns:
+        CommandResults: Object containing a list of accessing IP addresses for display in Cortex XSOAR.
+    """
 
     entity_id, entity_type, read_only, start_time, end_time = _breakdown_validate_params(client, args)
 
@@ -672,6 +1036,16 @@ def list_accessing_ips(client: GemClient, args: dict[str, Any]) -> CommandResult
 
 
 def update_threat_status(client: GemClient, args: dict[str, Any]):
+    """
+    Updates the status of a specified threat in the Gem system.
+
+    Args:
+        client (GemClient): The Gem client object.
+        args (dict): Command arguments, must include 'threat_id', 'status', 'verdict', and optionally 'reason'.
+
+    Raises:
+        DemistoException: If 'threat_id' is not provided in the arguments.
+    """
     threat_id = args.get('threat_id')
     status = args.get('status')
     verdict = args.get('verdict')
