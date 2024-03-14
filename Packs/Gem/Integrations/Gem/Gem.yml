@@ -36,11 +36,11 @@ configuration:
     type: 4
     section: Connect
     required: true
-  - display: Sync incidents 30 days back
-    name: firstFetch
-    type: 8
-    section: Collect
+  - display: First fetch timestamp (<number> <time unit>, e.g., 12 hours, 7 days)
+    defaultvalue: 30 days
+    name: first_fetch
     required: false
+    type: 0
   - display: Use system proxy settings
     name: proxy
     type: 8
@@ -57,23 +57,23 @@ configuration:
     type: 0
     section: Collect
     required: false
-description: "Use Gem alerts as a trigger for Cortex XSOAR’s custom playbooks, to automate response to specific TTPs"
+description: "Use Gem alerts as a trigger for Cortex XSOAR’s custom playbooks, to automate response to specific TTPs."
 display: Gem
 name: Gem
 script:
   commands:
     - name: gem-list-threats
-      description: List all threats detected in Gem
+      description: List all threats detected in Gem.
       arguments:
         - name: limit
           description: The number of alert to fetch.
           required: false
           defaultValue: "50"
         - name: time_start
-          description: "The start time of the threats to return in ISO format. Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "The start time of the threats to return in ISO format. Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
         - name: time_end
-          description: "The end time of the threats to return in ISO format. Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "The end time of the threats to return in ISO format. Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
         - name: ordering
           description: The ordering of the items.
@@ -297,7 +297,7 @@ script:
           type: String
 
     - name: gem-get-threat-details
-      description: Get details about a specific threat
+      description: Get details about a specific threat.
       arguments:
         - name: threat_id
           description: The ID of the threat to get details for.
@@ -470,7 +470,7 @@ script:
           type: String
 
     - name: gem-get-alert-details
-      description: Get details about a specific alert
+      description: Get details about a specific alert.
       arguments:
         - name: alert_id
           description: The ID of the alert to get details for.
@@ -601,7 +601,7 @@ script:
           type: String
 
     - name: gem-list-inventory-resources
-      description: List inventory resources in Gem
+      description: List inventory resources in Gem.
       arguments:
         - name: limit
           description: The number of items to return.
@@ -678,7 +678,7 @@ script:
           type: Unknown
 
     - name: gem-get-resource-details
-      description: Get details about a specific resource
+      description: Get details about a specific resource.
       arguments:
         - name: resource_id
           description: The ID of the resource to get details for.
@@ -740,7 +740,7 @@ script:
       description: List all source IP addresses used by an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
         - name: entity_id
-          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg."
           required: true
         - name: entity_type
           description: "Type of the entity. See documentation for the full options list."
@@ -751,10 +751,10 @@ script:
           type: Boolean
           defaultValue: false
         - name: start_time
-          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
         - name: end_time
-          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
       outputs:
         - contextPath: Gem.IP.AS_NAME
@@ -798,7 +798,7 @@ script:
       description: List all services accessed by an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
         - name: entity_id
-          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg."
           required: true
         - name: entity_type
           description: "Type of the entity. See documentation for the full options list."
@@ -809,10 +809,10 @@ script:
           type: Boolean
           defaultValue: false
         - name: start_time
-          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
         - name: end_time
-          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
       outputs:
         - contextPath: Gem.Entity.By.Services.COUNT_SERVICE
@@ -826,7 +826,7 @@ script:
       description: List all events performed by an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
         - name: entity_id
-          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg."
           required: true
         - name: entity_type
           description: "Type of the entity. See documentation for the full options list."
@@ -837,10 +837,10 @@ script:
           type: Boolean
           defaultValue: false
         - name: start_time
-          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
         - name: end_time
-          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
       outputs:
         - contextPath: Gem.Entity.By.Events.EVENTNAME
@@ -854,7 +854,7 @@ script:
       description: List all entities that accessed an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
         - name: entity_id
-          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg."
           required: true
         - name: entity_type
           description: "Type of the entity. See documentation for the full options list."
@@ -865,10 +865,10 @@ script:
           type: Boolean
           defaultValue: false
         - name: start_time
-          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
         - name: end_time
-          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
       outputs:
         - contextPath: Gem.Entity.Accessing.USER_COUNT
@@ -882,7 +882,7 @@ script:
       description: List all entities that used an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
         - name: entity_id
-          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg."
           required: true
         - name: entity_type
           description: "Type of the entity. See documentation for the full options list."
@@ -893,10 +893,10 @@ script:
           type: Boolean
           defaultValue: false
         - name: start_time
-          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
         - name: end_time
-          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
       outputs:
         - contextPath: Gem.Entity.Using.ENTITY_COUNT
@@ -910,7 +910,7 @@ script:
       description: List all events performed on an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
         - name: entity_id
-          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg."
           required: true
         - name: entity_type
           description: "Type of the entity. See documentation for the full options list."
@@ -921,10 +921,10 @@ script:
           type: Boolean
           defaultValue: false
         - name: start_time
-          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
         - name: end_time
-          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
       outputs:
         - contextPath: Gem.Entity.On.Events.EVENTNAME
@@ -938,7 +938,7 @@ script:
       description: List all source IP addresses that accessed an entity in a specific timeframe. The results are sorted by activity volume.
       arguments:
         - name: entity_id
-          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg"
+          description: "Gem ID of the entity. This will usually be the ARN or CSP ID. This property is also available for every resource in the Inventory screen. Example: arn:aws:ec2:us-east-1:112233445566:instance/i-1234567890abcdefg."
           required: true
         - name: entity_type
           description: "Type of the entity. See documentation for the full options list."
@@ -949,10 +949,10 @@ script:
           type: Boolean
           defaultValue: false
         - name: start_time
-          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "Timeframe start (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
         - name: end_time
-          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00"
+          description: "Timeframe end (ISO format). Examples: 2023-01-01, 2023-01-01T01:01:01Z, 2023-01-01T01:01:01+00:00."
           required: true
       outputs:
         - contextPath: Gem.Entity.Accessing.IPs.AS_NAME
@@ -1054,7 +1054,7 @@ script:
   script: "-"
   type: python
   subtype: python3
-  dockerimage: demisto/auth-utils:1.0.0.76157 # TODO: This docker image was selected since it contains the "jwt" package. Double check if it's the correct one.
-fromversion: 6.5.0
+  dockerimage: demisto/auth-utils:1.0.0.89650 # TODO: This docker image was selected since it contains the "jwt" package. Double check if it's the correct one.
+fromversion: 6.10.0
 tests:
   - No tests
