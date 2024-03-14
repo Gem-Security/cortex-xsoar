@@ -1,6 +1,11 @@
 description: Gem playbook to handle an alert involving an ec2 instance.
 id: "Gem Handle ec2"
-inputs: []
+inputs:
+  - description: Slack user to send message for
+    key: User
+    playbookInputQuery:
+    required: true
+    value: {}
 name: Gem Handle ec2
 outputs: []
 starttaskid: "0"
@@ -64,7 +69,7 @@ tasks:
         retriescount: 2
         retriesinterval: 360
       to:
-        simple: Administrator
+        simple: Administrator,${inputs.User}
     nexttasks:
       Ignore:
         - "8"

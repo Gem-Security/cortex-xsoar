@@ -15,18 +15,21 @@ This playbook does not use any sub-playbooks.
 
 ### Scripts
 
-* Set
 * ZipStrings
+* Set
 
 ### Commands
 
-* gem-get-alert-details
 * gem-add-timeline-event
+* gem-get-alert-details
 
 ## Playbook Inputs
 
 ---
-There are no inputs for this playbook.
+
+| **Name** | **Description** | **Default Value** | **Required** |
+| --- | --- | --- | --- |
+| User | Slack user to send validation for |  | Required |
 
 ## Playbook Outputs
 
@@ -37,4 +40,4 @@ There are no outputs for this playbook.
 
 ---
 
-![Gem Validate triggering events](../doc_files/Gem_Validate_triggering_events.png)
+![Gem Validate triggering event](../doc_files/Gem_Validate_triggering_event.png)

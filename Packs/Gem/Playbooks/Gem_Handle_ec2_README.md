@@ -25,7 +25,10 @@ This playbook does not use any sub-playbooks.
 ## Playbook Inputs
 
 ---
-There are no inputs for this playbook.
+
+| **Name** | **Description** | **Default Value** | **Required** |
+| --- | --- | --- | --- |
+| User | Slack user to send message for |  | Required |
 
 ## Playbook Outputs
 

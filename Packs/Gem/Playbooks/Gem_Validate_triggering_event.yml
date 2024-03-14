@@ -1,11 +1,15 @@
 description: |-
   Get the triggering events of a Gem Alert and send a validation Slack message to the dev team.
   The response will be added to the Gem Timeline.
-id: "Gem Validate triggering events"
-inputs: []
-name: Gem Validate triggering events
+id: "Gem Validate triggering event"
+inputs:
+  - description: Slack user to send validation for
+    key: User
+    playbookInputQuery:
+    required: true
+    value: {}
+name: Gem Validate triggering event
 outputs: []
-quiet: true
 starttaskid: "0"
 fromversion: 6.8.0
 tasks:
@@ -64,7 +68,7 @@ tasks:
         retriescount: 2
         retriesinterval: 360
       to:
-        simple: Administrator
+        simple: Administrator,${inputs.User}
     nexttasks:
       No, I didn't do any of these:
         - "9"
@@ -77,13 +81,13 @@ tasks:
     task:
       brand: ""
       description: Send a Slack validation message.
-      id: 7cb4f004-f9a7-4c0c-89a5-7294f046dc35
+      id: 57a572c7-8228-4e13-82b3-2be5538f3aed
       iscommand: false
       name: |
         Validate
       type: condition
       version: -1
-    taskid: 7cb4f004-f9a7-4c0c-89a5-7294f046dc35
+    taskid: 57a572c7-8228-4e13-82b3-2be5538f3aed
     timertriggers: []
     type: condition
     view: |-
@@ -282,20 +286,20 @@ tasks:
     task:
       brand: Gem
       description: Add a timeline event to a threat.
-      id: 4514fb07-026f-413c-8710-ba88e3b14695
+      id: a25b9d9d-5965-405c-89a5-94bc079ee2e2
       iscommand: true
       name: gem-add-timeline-event
       script: Gem|||gem-add-timeline-event
       type: regular
       version: -1
-    taskid: 4514fb07-026f-413c-8710-ba88e3b14695
+    taskid: a25b9d9d-5965-405c-89a5-94bc079ee2e2
     timertriggers: []
     type: regular
     view: |-
       {
         "position": {
-          "x": 90,
-          "y": 1030
+          "x": 240,
+          "y": 1020
         }
       }
   "9":
@@ -316,20 +320,20 @@ tasks:
     task:
       brand: Gem
       description: Add a timeline event to a threat.
-      id: 4c3e70a7-57c7-487d-8f3b-e33d1ec96887
+      id: 2729d13f-bd1b-476e-8fdc-24ed2665d243
       iscommand: true
       name: gem-add-timeline-event
       script: Gem|||gem-add-timeline-event
       type: regular
       version: -1
-    taskid: 4c3e70a7-57c7-487d-8f3b-e33d1ec96887
+    taskid: 2729d13f-bd1b-476e-8fdc-24ed2665d243
     timertriggers: []
     type: regular
     view: |-
       {
         "position": {
-          "x": 710,
-          "y": 1030
+          "x": 700,
+          "y": 1010
         }
       }
 version: -1
@@ -338,9 +342,9 @@ view: |-
     "linkLabelsPosition": {},
     "paper": {
       "dimensions": {
-        "height": 1075,
-        "width": 1050,
-        "x": 90,
+        "height": 1065,
+        "width": 1000,
+        "x": 140,
         "y": 50
       }
     }
