@@ -502,12 +502,12 @@ class GemClient(BaseClient):
 
         return response
 
-    def add_timeline_event(self, threatid: str, comment: str, timestamp: str) -> dict:
+    def add_timeline_event(self, threat_id: str, comment: str, timestamp: str) -> dict:
         """
         Adds a timeline event to a threat.
 
         Args:
-            threatid (str): The ID of the threat.
+            threat_id (str): The ID of the threat.
             comment (str): The comment for the timeline event.
             timestamp (str): The timestamp of the timeline event.
 
@@ -517,7 +517,7 @@ class GemClient(BaseClient):
         params = {'title': "XSOAR comment", "description": comment, "timeline_event_type": "xsoar", "timestamp": timestamp}
         response = self.http_request(
             method='POST',
-            url_suffix=ADD_TIMELINE_EVENT_ENDPOINT.format(id=threatid),
+            url_suffix=ADD_TIMELINE_EVENT_ENDPOINT.format(id=threat_id),
             json_data={k: v for k, v in params.items() if v is not None}
         )
 
@@ -1088,15 +1088,15 @@ def run_action_on_entity(client: GemClient, args: dict[str, Any]) -> CommandResu
 
 def add_timeline_event(client: GemClient, args: dict[str, Any]) -> CommandResults:
 
-    threatid = args.get('threat_id')
+    threat_id = args.get('threat_id')
     comment = args.get('comment')
 
-    if not threatid:
+    if not threat_id:
         raise DemistoException('Threat ID is a required parameter.')
     if not comment:
         raise DemistoException('Comment is a required parameter.')
 
-    result = client.add_timeline_event(threatid=threatid, comment=comment, timestamp=datetime.now().strftime(DATE_FORMAT))
+    result = client.add_timeline_event(threat_id=threat_id, comment=comment, timestamp=datetime.now().strftime(DATE_FORMAT))
     return CommandResults(
         readable_output=tableToMarkdown('AddTimelineEvent Result', result),
         outputs_prefix='Gem.AddTimelineEvent',

@@ -601,3 +601,38 @@ def test_update_threat_status(http_request, _generate_token):
     }
     res = update_threat_status(client, args)
     assert res is None
+
+
+test_run_action_on_entity_data = {}
+
+
+@patch('Gem.GemClient._generate_token', return_value=mock_auth_token)
+@patch('Gem.GemClient.http_request', return_value=test_run_action_on_entity_data)
+def test_run_action_on_entity(http_request, _generate_token):
+    from Gem import run_action_on_entity, init_client
+    client = init_client(params)
+    args = {
+        "action": "stop",
+        "entity_id": "ec2 instance id",
+        "entity_type": "ec2_instance",
+        "alert_id": "00000000-0000-0000-0000-000000000000",
+        "resource_id": "ec2 instance id",
+    }
+    res = run_action_on_entity(client, args)
+    assert res.outputs == test_run_action_on_entity_data
+
+
+test_add_timeline_event_data = {}
+
+
+@patch('Gem.GemClient._generate_token', return_value=mock_auth_token)
+@patch('Gem.GemClient.http_request', return_value=test_add_timeline_event_data)
+def test_add_timeline_event(http_request, _generate_token):
+    from Gem import add_timeline_event, init_client
+    client = init_client(params)
+    args = {
+        "threat_id": "11111111-1111-1111-1111-111111111111",
+        "comment": "A comment",
+    }
+    res = add_timeline_event(client, args)
+    assert res.outputs == test_add_timeline_event_data
