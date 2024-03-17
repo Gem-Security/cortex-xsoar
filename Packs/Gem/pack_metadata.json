@@ -61,8 +61,16 @@
             "name": "Generic Webhook"
         },
         "CommonScripts": {
-            "mandatory": false,
+            "mandatory": true,
             "name": "Common Scripts"
+        },
+        "CommonTypes": {
+            "mandatory": true,
+            "display_name": "Common Types"
+        },
+        "FiltersAndTransformers": {
+            "mandatory": true,
+            "display_name": "Filters And Transformers"
         }
     },
     "marketplaces": [
