@@ -1,17 +1,6 @@
 {
-    "brands": null,
-    "cacheVersn": 0,
-    "defaultIncidentType": "",
-    "definitionId": "",
     "feed": false,
-    "fromVersion": "6.8.0",
-    "incidentSamples": null,
-    "indicatorSamples": null,
-    "instanceIds": null,
-    "itemVersion": "",
-    "keyTypeMap": {},
-    "locked": false,
-    "logicalVersion": 3,
+    "fromVersion": "6.10.0",
     "mapping": {
         "Gem Alert": {
             "dontMapEventToLabels": false,
@@ -130,12 +119,5 @@
     "name": "Gem Mapper Webhook",
     "type": "mapping-incoming",
     "description": "Maps incoming Gem Alert fields when received via webhook.",
-    "packID": "",
-    "packName": "",
-    "sourceClassifierId": "",
-    "system": false,
-    "toServerVersion": "",
-    "transformer": {},
-    "unclassifiedCases": null,
     "version": -1
 }
