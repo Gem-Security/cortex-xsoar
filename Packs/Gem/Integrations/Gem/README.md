@@ -1,5 +1,4 @@
 Use Gem alerts as a trigger for Cortex XSOAR’s custom playbooks, to automate response to specific TTPs.
-This integration was integrated and tested with version xx of Gem.
 
 ## Configure Gem on Cortex XSOAR
 
@@ -547,6 +546,7 @@ Set a threat's status to open, in progress or resolved.
 #### Context Output
 
 There is no context output for this command.
+
 ### gem-run-action
 
 ***
@@ -569,6 +569,7 @@ Run an action on an entity.
 #### Context Output
 
 There is no context output for this command.
+
 ### gem-add-timeline-event
 
 ***
