@@ -21,6 +21,8 @@ MAX_ALERTS_TO_FETCH = 50
 # ENDPOINTS
 TOKEN_URL = 'https://login.gem.security/oauth/token'
 
+
+# Get information Endpoints
 THREATS_ENDPOINT = '/v1/threats'
 THREAT_ENDPOINT = '/v1/threats/{id}'
 INVENTORY_ENDPOINT = '/v1/inventory'
@@ -28,9 +30,9 @@ INVENTORY_ITEM_ENDPOINT = '/v1/inventory/{id}'
 
 ALERTS_ENDPOINT = '/triage/investigation/timeline/configuration'
 BREAKDOWN_ENDPOINT = '/triage/investigation/timeline/breakdown'
-EVENTS_ENDPOINT = '/triage/investigation/entity/events'
 FETCH_ENDPOINT = '/integrations/notification'
 
+# Actions Endpoints
 UPDATE_THREAT_ENDPOINT = '/v1/threats/{id}/status'
 
 RUN_ACTION_ENDPOINT = '/triage/containment/entity/run-action'
