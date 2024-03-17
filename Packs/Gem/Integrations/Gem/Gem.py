@@ -73,7 +73,7 @@ class GemClient(BaseClient):
         else:
             # Token exists, check if it's expired and generate a new one if needed
             auth_token = ctx.get('auth_token')
-            decoded_jwt = jwt.decode(auth_token, options={"verify_signature": False})
+            decoded_jwt = jwt.decode(auth_token, options={"verify_signature": False})  # type: ignore
 
             token_expiration = datetime.fromtimestamp(decoded_jwt['exp'])
 
