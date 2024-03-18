@@ -21,17 +21,10 @@
         "IAM",
         "Incident Handling",
         "Incident Response",
-        "DevOps",
-        "DevSecOps",
         "Network",
         "Security",
         "Security Analytics",
-        "MITRE ATT&CK",
-        "CDR",
-        "CIRA",
-        "Security Automation",
-        "Investigation",
-        "Cloud Security"
+        "MITRE ATT&CK"
     ],
     "useCases": [
         "Breach Notification",
@@ -49,7 +42,14 @@
         "Incident Response",
         "Security",
         "Security Analytics",
-        "MITRE ATT&CK"
+        "MITRE ATT&CK",
+        "CDR",
+        "CIRA",
+        "Security Automation",
+        "Investigation",
+        "Cloud Security",
+        "DevOps",
+        "DevSecOps"
     ],
     "dependencies": {
         "Base": {

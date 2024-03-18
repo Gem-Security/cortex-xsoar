@@ -1,5 +1,3 @@
-import json
-
 import pytest
 from unittest.mock import patch
 import demistomock as demisto
@@ -18,11 +16,6 @@ mock_auth_token = "mock_auth_token"
 @pytest.fixture(autouse=True)
 def set_mocks(mocker):
     mocker.patch.object(demisto, 'params', return_value=params)
-
-
-def util_load_json(path):
-    with open(path, encoding='utf-8') as f:
-        return json.loads(f.read())
 
 
 test_get_threat_details_data = {

@@ -1,7 +1,5 @@
 {
     "action": "link",
-    "cacheVersn": 0,
-    "definitionId": "",
     "enabled": true,
     "existingEventsFilters": [
         [
@@ -23,7 +21,6 @@
             }
         ]
     ],
-    "fromServerVersion": "",
     "id": "Gem Alert Merger",
     "index": 2,
     "itemVersion": "",
@@ -49,7 +46,6 @@
         ]
     ],
     "packID": "",
-    "packName": "",
     "period": {
         "by": "days",
         "fromValue": 1
@@ -92,10 +88,10 @@
             }
         ]
     ],
-    "scriptID": "",
     "scriptName": "",
     "searchClosed": true,
     "system": false,
     "toServerVersion": "",
-    "version": -1
+    "version": -1,
+    "fromVersion": "6.10.0"
 }

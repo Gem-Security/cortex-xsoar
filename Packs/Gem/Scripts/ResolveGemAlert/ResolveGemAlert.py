@@ -2,19 +2,7 @@ from CommonServerPython import *  # noqa: F401
 
 
 def main():
-    incident = demisto.incident()
-    close_reason = incident.get("closeReason", "")
-    close_notes = incident.get("closeNotes", "")
-    close_notes = close_notes if close_notes else demisto.args().get("closeNotes", "")
-
-    incident_id = incident.get("id", "")
-    threat_id = incident.get("CustomFields").get("gemthreatid")
-
-    verdict = incident.get("CustomFields").get("gemverdict")
-    verdict = verdict if verdict else demisto.args().get("gemverdict", "")
-    verdict = verdict if verdict else "inconclusive"
-    verdict = verdict.replace(" ", "_").lower()
-    status = "resolved"
+    close_reason, close_notes, incident_id, threat_id, verdict, status = _get_params()
 
     demisto.log(f"Resolving Gem Threat {threat_id} with status {status}, verdict {verdict} and close notes {close_notes}")
     demisto.executeCommand("gem-update-threat-status", {
@@ -26,6 +14,25 @@ def main():
         "status": status})
 
     demisto.log(f"Resolved Gem Threat {threat_id} with status {status}, verdict {verdict} and close notes {close_notes}")
+
+
+def _get_params():
+    incident = demisto.incident()
+    close_reason = incident.get("closeReason", "")
+    close_reason = close_reason if close_reason else demisto.args().get("closeReason", "")
+
+    close_notes = incident.get("closeNotes", "")
+    close_notes = close_notes if close_notes else demisto.args().get("closeNotes", "")
+
+    incident_id = incident.get("id", "")
+    threat_id = incident.get("CustomFields").get("gemthreatid")
+
+    verdict = incident.get("CustomFields").get("gemverdict")
+    verdict = verdict if verdict else demisto.args().get("gemverdict", "")
+    verdict = verdict.replace(" ", "_").lower()
+
+    status = "resolved"
+    return close_reason, close_notes, incident_id, threat_id, verdict, status
 
 
 if __name__ in ('__main__', '__builtin__', 'builtins'):
