@@ -1,4 +1,4 @@
-comment: "Post Processing Script that will resolve the relevant Alert in the Gem platform."
+comment: "Post Processing Script that will resolve the relevant Threat in the Gem platform."
 commonfields:
   id: ResolveGemAlert
   version: -1
