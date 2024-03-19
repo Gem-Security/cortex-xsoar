@@ -67,6 +67,10 @@
         "FiltersAndTransformers": {
             "mandatory": true,
             "display_name": "Filters And Transformers"
+        },
+        "Slack": {
+            "mandatory": false,
+            "display_name": "Slack"
         }
     },
     "marketplaces": [

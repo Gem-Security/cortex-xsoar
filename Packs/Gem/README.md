@@ -7,4 +7,4 @@ Respond automatically using pre-defined playbooks for specific scenarios like a 
 
 For more information, visit https://gem.security.
 
-![Gem Logo](https://raw.githubusercontent.com/demisto/content/master/Packs/Gem/Author_image.png)
+![Gem Logo](https://static.wixstatic.com/media/5af59e_6dfcae71f83c464eb22bb63846fc4fb4~mv2.png)
