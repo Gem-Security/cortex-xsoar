@@ -150,6 +150,9 @@ class GemClient(BaseClient):
 
         return token_res.get('access_token')
 
+    def _filter_non_empty_params(self, params):
+        return {k: v for k, v in params.items() if v is not None}
+
     def fetch_threats(self, maxincidents=None, start_time=None) -> list[dict]:
         """
         Fetches a list of threats from the Gem API.
@@ -165,7 +168,7 @@ class GemClient(BaseClient):
         return self.http_request(
             method='GET',
             url_suffix=FETCH_ENDPOINT,
-            params={k: v for k, v in params.items() if v is not None}
+            params=self._filter_non_empty_params(params)
 
         )
 
@@ -206,7 +209,7 @@ class GemClient(BaseClient):
         response = self.http_request(
             method='GET',
             url_suffix=ALERTS_ENDPOINT,
-            params={k: v for k, v in params.items() if v is not None}
+            params=self._filter_non_empty_params(params)
         )
 
         return response
@@ -243,7 +246,7 @@ class GemClient(BaseClient):
                 response = self.http_request(
                     method='GET',
                     url_suffix=THREATS_ENDPOINT,
-                    params={k: v for k, v in params.items() if v is not None}
+                    params=self._filter_non_empty_params(params)
 
                 )
                 results_fetched = limit
@@ -256,7 +259,7 @@ class GemClient(BaseClient):
                 response = self.http_request(
                     method='GET',
                     url_suffix=THREATS_ENDPOINT,
-                    params={k: v for k, v in params.items() if v is not None}
+                    params=self._filter_non_empty_params(params)
 
                 )
                 if len(response['results']) < PAGE_SIZE:
@@ -294,7 +297,7 @@ class GemClient(BaseClient):
         response = self.http_request(
             method='GET',
             url_suffix=INVENTORY_ENDPOINT,
-            params={k: v for k, v in params.items() if v is not None}
+            params=self._filter_non_empty_params(params)
 
         )
         results_fetched += len(response['results'])
@@ -308,7 +311,7 @@ class GemClient(BaseClient):
             response = self.http_request(
                 method='GET',
                 url_suffix=INVENTORY_ENDPOINT,
-                params={k: v for k, v in params.items() if v is not None}
+                params=self._filter_non_empty_params(params)
 
             )
             results_fetched += len(response['results'])
@@ -325,7 +328,7 @@ class GemClient(BaseClient):
         response = self.http_request(
             method='GET',
             url_suffix=BREAKDOWN_ENDPOINT,
-            params={k: v for k, v in params.items() if v is not None}
+            params=self._filter_non_empty_params(params)
         )
 
         return response['table']
@@ -499,7 +502,7 @@ class GemClient(BaseClient):
         response = self.http_request(
             method='POST',
             url_suffix=RUN_ACTION_ENDPOINT,
-            params={k: v for k, v in params.items() if v is not None}
+            params=self._filter_non_empty_params(params)
         )
 
         return response
@@ -520,7 +523,7 @@ class GemClient(BaseClient):
         response = self.http_request(
             method='POST',
             url_suffix=ADD_TIMELINE_EVENT_ENDPOINT.format(id=threat_id),
-            json_data={k: v for k, v in params.items() if v is not None}
+            json_data=self._filter_non_empty_params(params)
         )
 
         return response
