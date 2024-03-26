@@ -187,15 +187,15 @@
                     },
                     {
                         "displayType": "ROW",
-                        "h": 2,
+                        "h": 1,
                         "i": "caseinfoid-842632c0-98b1-11e9-97d7-ed26ef9e46c8",
                         "maxW": 3,
                         "moved": false,
                         "name": "Child Incidents",
                         "static": false,
                         "type": "childInv",
-                        "w": 1,
-                        "x": 2,
+                        "w": 3,
+                        "x": 0,
                         "y": 8
                     },
                     {
