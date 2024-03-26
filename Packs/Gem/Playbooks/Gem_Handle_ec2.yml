@@ -1,4 +1,4 @@
-description: Gem playbook to handle an alert involving an ec2 instance
+description: Gem playbook to handle an alert involving an ec2 instance.
 id: "Gem Handle ec2"
 inputs: []
 name: Gem Handle ec2
@@ -13,7 +13,7 @@ tasks:
     isoversize: false
     nexttasks:
       "#none#":
-        - "7"
+      - "7"
     note: false
     quietmode: 0
     separatecontext: false
@@ -24,6 +24,7 @@ tasks:
       iscommand: false
       name: ""
       version: -1
+      description: ''
     taskid: 858a615f-7cd9-467b-8766-2186642cecf0
     timertriggers: []
     type: start
@@ -41,23 +42,20 @@ tasks:
     isautoswitchedtoquietmode: false
     isoversize: false
     message:
-      bcc: null
+      bcc:
       body:
-        simple:
-          "Hi, \nWe've detected some suspicious activity related to your ec2
-          instance: \n${incident.gemmainentityname}\nWould you like to take a containment
-          action?"
-      cc: null
+        simple: "Hi, \nWe've detected some suspicious activity related to your ec2 instance: \n${incident.gemmainentityname}\nWould you like to take a containment action?"
+      cc:
       defaultOption: Ignore
       format: ""
       methods:
-        - SlackV3
+      - SlackV3
       replyOptions:
-        - Stop
-        - Isolate
-        - Terminate
-        - Ignore
-      subject: null
+      - Stop
+      - Isolate
+      - Terminate
+      - Ignore
+      subject:
       timings:
         completeafterreplies: 1
         completeaftersla: false
@@ -68,13 +66,13 @@ tasks:
         simple: Administrator
     nexttasks:
       Ignore:
-        - "8"
+      - "8"
       Isolate:
-        - "5"
+      - "5"
       Stop:
-        - "2"
+      - "2"
       Terminate:
-        - "4"
+      - "4"
     note: false
     quietmode: 0
     separatecontext: false
@@ -110,7 +108,7 @@ tasks:
     isoversize: false
     nexttasks:
       "#none#":
-        - "6"
+      - "6"
     note: false
     quietmode: 0
     scriptarguments:
@@ -153,7 +151,7 @@ tasks:
     isoversize: false
     nexttasks:
       "#none#":
-        - "6"
+      - "6"
     note: false
     quietmode: 0
     scriptarguments:
@@ -196,7 +194,7 @@ tasks:
     isoversize: false
     nexttasks:
       "#none#":
-        - "6"
+      - "6"
     note: false
     quietmode: 0
     scriptarguments:
@@ -273,9 +271,9 @@ tasks:
     isoversize: false
     nexttasks:
       "#default#":
-        - "9"
+      - "9"
       ec2_instance:
-        - "1"
+      - "1"
     note: false
     quietmode: 0
     scriptarguments:
@@ -285,10 +283,7 @@ tasks:
     skipunavailable: false
     task:
       brand: ""
-      description:
-        "Gets a value and return it. This is to be used in playbook conditional
-        tasks - get a value from incident field, label or context, and act accordingly.
-        \nIf an array is returned. the first value will be the decision making value."
+      description: "Gets a value and return it. This is to be used in playbook conditional tasks - get a value from incident field, label or context, and act accordingly. \nIf an array is returned. the first value will be the decision making value."
       id: 9520a384-f200-4f17-84a3-fd682344e544
       iscommand: false
       name: Validate ec2 instance
@@ -357,6 +352,7 @@ tasks:
       name: Done
       type: title
       version: -1
+      description: ''
     taskid: e153719a-fcbe-431b-8def-bc65c62705fc
     timertriggers: []
     type: title
@@ -382,3 +378,6 @@ view: |-
       }
     }
   }
+tests:
+- No tests (auto formatted)
+fromversion: 6.10.0

@@ -1,7 +1,4 @@
-description:
-  Find all the users who might’ve performed the actions using root (via
-  the source IP), validate it with them using Slack and resolve the alert in case
-  these actions were planned.
+description: Find all the users who might’ve performed the actions using root (via the source IP), validate it with them using Slack and resolve the alert in case these actions were planned.
 id: "Gem Handle Alert for Root Usage"
 inputs: []
 name: Gem Handle Alert for Root Usage
@@ -27,6 +24,7 @@ tasks:
       iscommand: false
       name: ""
       version: -1
+      description: ""
     taskid: 0dc56a28-3e8f-4a90-8a1a-4001bfd85c4e
     timertriggers: []
     type: start
@@ -105,9 +103,7 @@ tasks:
     skipunavailable: false
     task:
       brand: Gem
-      description:
-        List all entities that used an entity in a specific timeframe.
-        The results are sorted by activity volume.
+      description: List all entities that used an entity in a specific timeframe. The results are sorted by activity volume.
       id: 569bd7d1-b399-4509-864d-6996b04e6504
       iscommand: true
       name: Get users using the source ip
@@ -327,20 +323,17 @@ tasks:
     isautoswitchedtoquietmode: false
     isoversize: false
     message:
-      bcc: null
+      bcc:
       body:
-        simple:
-          "Hi,  \nWe've detected some suspicious activity related to your user:
-          *${Gem.Alert.alert_context.title}*\n\nWe wanted to verify you're familiar
-          with the following actions (Showing only first 10) :\n${zipped_list.[0]}\n${zipped_list.[1]}\n${zipped_list.[2]}\n${zipped_list.[3]}\n${zipped_list.[4]}\n${zipped_list.[5]}\n${zipped_list.[6]}\n${zipped_list.[7]}\n${zipped_list.[8]}\n${zipped_list.[9]}"
-      cc: null
+        simple: "Hi,  \nWe've detected some suspicious activity related to your user: *${Gem.Alert.alert_context.title}*\n\nWe wanted to verify you're familiar with the following actions (Showing only first 10) :\n${zipped_list.[0]}\n${zipped_list.[1]}\n${zipped_list.[2]}\n${zipped_list.[3]}\n${zipped_list.[4]}\n${zipped_list.[5]}\n${zipped_list.[6]}\n${zipped_list.[7]}\n${zipped_list.[8]}\n${zipped_list.[9]}"
+      cc:
       format: ""
       methods:
         - SlackV3
       replyOptions:
         - "*Yes, it's me*"
         - "*No, I didn't do any of these*"
-      subject: null
+      subject:
       timings:
         completeafterreplies: 1
         completeaftersla: false
@@ -658,6 +651,7 @@ tasks:
       name: Done
       type: title
       version: -1
+      description: ""
     taskid: 5c288440-f8a2-4877-8f89-3d2ff25fd68f
     timertriggers: []
     type: title
@@ -685,6 +679,7 @@ tasks:
       name: Done
       type: title
       version: -1
+      description: ""
     taskid: c8b8a762-cbb3-4f83-8c68-bc73a469ae90
     timertriggers: []
     type: title
@@ -817,6 +812,7 @@ tasks:
       name: No users in the last week?
       type: condition
       version: -1
+      description: "Check if no users used that source ip address in the last week"
     taskid: 99e52e14-50f1-47aa-8955-9032d86133f8
     timertriggers: []
     type: condition
@@ -844,6 +840,7 @@ tasks:
       name: Done
       type: title
       version: -1
+      description: ""
     taskid: 55120ccc-fc6f-4c09-8252-dfc7fa294c9e
     timertriggers: []
     type: title
@@ -870,3 +867,6 @@ view: |-
       }
     }
   }
+tests:
+  - No tests (auto formatted)
+fromversion: 6.10.0
