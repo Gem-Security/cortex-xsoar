@@ -1,6 +1,11 @@
 description: Gem playbook to handle an alert involving an ec2 instance.
 id: "Gem Handle ec2"
-inputs: []
+inputs:
+  - description: Slack user to send message for
+    key: User
+    playbookInputQuery:
+    required: true
+    value: {}
 name: Gem Handle ec2
 outputs: []
 starttaskid: "0"
@@ -13,7 +18,7 @@ tasks:
     isoversize: false
     nexttasks:
       "#none#":
-      - "7"
+        - "7"
     note: false
     quietmode: 0
     separatecontext: false
@@ -49,12 +54,12 @@ tasks:
       defaultOption: Ignore
       format: ""
       methods:
-      - SlackV3
+        - SlackV3
       replyOptions:
-      - Stop
-      - Isolate
-      - Terminate
-      - Ignore
+        - Stop
+        - Isolate
+        - Terminate
+        - Ignore
       subject:
       timings:
         completeafterreplies: 1
@@ -63,16 +68,16 @@ tasks:
         retriescount: 2
         retriesinterval: 360
       to:
-        simple: Administrator
+        simple: Administrator,${inputs.User}
     nexttasks:
       Ignore:
-      - "8"
+        - "8"
       Isolate:
-      - "5"
+        - "5"
       Stop:
-      - "2"
+        - "2"
       Terminate:
-      - "4"
+        - "4"
     note: false
     quietmode: 0
     separatecontext: false
@@ -108,7 +113,7 @@ tasks:
     isoversize: false
     nexttasks:
       "#none#":
-      - "6"
+        - "6"
     note: false
     quietmode: 0
     scriptarguments:
@@ -151,7 +156,7 @@ tasks:
     isoversize: false
     nexttasks:
       "#none#":
-      - "6"
+        - "6"
     note: false
     quietmode: 0
     scriptarguments:
@@ -194,7 +199,7 @@ tasks:
     isoversize: false
     nexttasks:
       "#none#":
-      - "6"
+        - "6"
     note: false
     quietmode: 0
     scriptarguments:
@@ -271,9 +276,9 @@ tasks:
     isoversize: false
     nexttasks:
       "#default#":
-      - "9"
+        - "9"
       ec2_instance:
-      - "1"
+        - "1"
     note: false
     quietmode: 0
     scriptarguments:
@@ -379,5 +384,5 @@ view: |-
     }
   }
 tests:
-- No tests (auto formatted)
-fromversion: 6.10.0
+  - No tests (auto formatted)
+fromversion: 6.12.0
