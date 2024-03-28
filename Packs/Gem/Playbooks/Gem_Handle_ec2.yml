@@ -24,7 +24,7 @@ tasks:
       iscommand: false
       name: ""
       version: -1
-      description: ''
+      description: ""
     taskid: 858a615f-7cd9-467b-8766-2186642cecf0
     timertriggers: []
     type: start
@@ -115,7 +115,7 @@ tasks:
       action:
         simple: stop
       alert_id:
-        simple: ${incident.gemalertid}
+        simple: ${incident.alertid}
       entity_id:
         simple: ${incident.gemmainentityid}
       entity_type:
@@ -158,7 +158,7 @@ tasks:
       action:
         simple: terminate
       alert_id:
-        simple: ${incident.gemalertid}
+        simple: ${incident.alertid}
       entity_id:
         simple: ${incident.gemmainentityid}
       entity_type:
@@ -201,7 +201,7 @@ tasks:
       action:
         simple: isolate_instance_traffic
       alert_id:
-        simple: ${incident.gemalertid}
+        simple: ${incident.alertid}
       entity_id:
         simple: ${incident.gemmainentityid}
       entity_type:
@@ -352,7 +352,7 @@ tasks:
       name: Done
       type: title
       version: -1
-      description: ''
+      description: ""
     taskid: e153719a-fcbe-431b-8def-bc65c62705fc
     timertriggers: []
     type: title

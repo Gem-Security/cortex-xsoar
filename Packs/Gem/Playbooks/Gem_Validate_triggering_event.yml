@@ -31,7 +31,7 @@ tasks:
       iscommand: false
       name: ""
       version: -1
-      description: ''
+      description: ""
     taskid: cde9852c-cbdf-4280-8943-a77b98985c8c
     timertriggers: []
     type: start
@@ -111,7 +111,7 @@ tasks:
     quietmode: 1
     scriptarguments:
       alert_id:
-        simple: ${incident.gemalertid}
+        simple: ${incident.alertid}
     separatecontext: false
     skipunavailable: false
     task:
