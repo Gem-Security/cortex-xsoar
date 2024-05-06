@@ -575,8 +575,8 @@ def init_client(params: dict) -> GemClient:
         base_url=params['api_endpoint'],
         verify=True,
         proxy=params.get('proxy', False),
-        client_id=demisto.getParam('credentials')['identifier'], # type: ignore
-        client_secret=demisto.getParam('credentials')['password'] # type: ignore
+        client_id=demisto.getParam('credentials', {})['identifier'], # type: ignore
+        client_secret=demisto.getParam('credentials', {})['password'] # type: ignore
     )
 
 
